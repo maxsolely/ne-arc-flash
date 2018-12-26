@@ -10,12 +10,6 @@ var port = process.env.PORT;
 var app = express();
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.send({
-    text: 'hello from the arc flash calc'
-  });
-});
-
 app.post('/addNewStation', (req, res) => {
   var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationType']);
   var station = new Station({
