@@ -10,7 +10,7 @@ var port = process.env.PORT;
 var app = express();
 app.use(bodyParser.json());
 
-app.post('/addNewStation', (req, res) => {
+app.post('/stations', (req, res) => {
   var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationType']);
   var station = new Station({
     name: body.name,
@@ -42,3 +42,5 @@ app.get('/stations', (req, res) => {
 app.listen(port, () => {
   console.log(`Starting server on ${port}`);
 });
+
+module.exports = { app };
