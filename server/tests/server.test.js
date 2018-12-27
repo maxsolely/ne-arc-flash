@@ -131,3 +131,44 @@ describe('GET /stations/:id', () => {
       .end(done);
   });
 });
+
+describe('DELETE /stations/:id', () => {
+  it('should delete a station with the requested id', done => {
+    var id = stations[1]._id.toHexString();
+    request(app)
+      .delete(`/stations/${id}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.station.name).toBe(stations[1].name);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Station.findById(id)
+          .then(station => {
+            expect(station).toBeFalsy();
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should return 404 if station not found', done => {
+    var unkownId = new ObjectID().toHexString;
+    request(app)
+      .delete(`/stations/${unkownId}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .delete('/stations/123')
+      .expect(404)
+      .end(done);
+  });
+});

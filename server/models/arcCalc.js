@@ -1,6 +1,10 @@
 var mongoose = require('mongoose');
 const voltageEnums = ['4 kV', '13.8 kV', '34.5 kV', '69 kV', '115 kV'];
 
+// ['sub1', 'sub2', 'faultCurrent', 'relayOpTime', 'lineVoltage', 'lineNumber', 'faultType', 'stationType', 'grounded']
+// ['current', 'sourceVoltage', 'duartion', 'electrodeMaterial', 'distanceToArc']
+// ['arcVoltage', 'arcEnergy', 'incidentEnergy', 'hrcLevel' ]
+
 var ArcCalc = mongoose.model('ArcCalc', {
   calcParams: {
     sub1: {
@@ -22,7 +26,7 @@ var ArcCalc = mongoose.model('ArcCalc', {
       required: true
     },
     lineVoltage: {
-      type: String,
+      type: Number,
       required: true,
       enum: voltageEnums
     },
@@ -88,11 +92,7 @@ var ArcCalc = mongoose.model('ArcCalc', {
       type: Number,
       required: true
     }
-  },
-  _creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true
   }
 });
 
-module.exports = { arcCalc };
+module.exports = { ArcCalc };
