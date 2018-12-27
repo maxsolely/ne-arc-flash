@@ -1,5 +1,6 @@
 const expect = require('expect');
 const request = require('supertest');
+const { ObjectID } = require('mongodb');
 
 var { app } = require('./../server');
 const { Station } = require('./../models/station');
@@ -78,5 +79,55 @@ describe('POST /stations', () => {
             done(e);
           });
       });
+  });
+});
+
+describe('GET /stations', () => {
+  it('should return all stations in the database', done => {
+    request(app)
+      .get('/stations')
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        }
+
+        Station.find()
+          .then(stations => {
+            expect(stations.length).toBe(2);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+});
+
+describe('GET /stations/:id', () => {
+  it('should return the station with the requested id', done => {
+    var id = stations[0]._id.toHexString();
+    request(app)
+      .get(`/stations/${id}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.station.name).toBe(stations[0].name);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if station not found', done => {
+    var unkownId = new ObjectID().toHexString;
+    request(app)
+      .get(`/stations/${unkownId}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .get(`/stations/123`)
+      .expect(404)
+      .end(done);
   });
 });

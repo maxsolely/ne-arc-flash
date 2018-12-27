@@ -22,7 +22,14 @@ var Station = mongoose.model('Station', {
     type: String,
     required: true,
     enum: ['Metalclad', 'Open-Air']
-  }
+  },
+  stationCalcs: [
+    {
+      calculation: {
+        type: mongoose.Schema.Types.ObjectId
+      }
+    }
+  ]
 });
 
 module.exports = { Station };

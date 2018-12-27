@@ -3,6 +3,7 @@ const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const { ObjectID } = require('mongodb');
 var { mongoose } = require('./db/mongoose');
 var { Station } = require('./models/station');
 
@@ -33,6 +34,25 @@ app.get('/stations', (req, res) => {
   Station.find()
     .then(stations => {
       res.send({ stations });
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
+
+app.get('/stations/:id', (req, res) => {
+  var id = req.params.id;
+  //If ID is not valid
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  Station.findOne({ _id: id })
+    .then(station => {
+      if (!station) {
+        res.status(404).send();
+      }
+      res.send({ station });
     })
     .catch(e => {
       res.status(400).send(e);
