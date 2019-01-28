@@ -12,6 +12,17 @@ var port = process.env.PORT;
 var app = express();
 app.use(bodyParser.json());
 
+function createCleanObject(obj) {
+  var clonedObject = _.cloneDeep(obj);
+  for (var propName in clonedObject) {
+    var objectValue = _.trim(clonedObject[propName]);
+    if (objectValue === null || objectValue.length === 0) {
+      delete clonedObject[propName];
+    }
+  }
+  return clonedObject;
+}
+
 // **********************************************
 // ****************** STATIONS ******************
 // **********************************************
@@ -80,6 +91,37 @@ app.delete('/stations/:id', (req, res) => {
     });
 });
 
+app.patch('/stations/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  var bodyToUpdate = _.pick(req.body, [
+    'name',
+    'division',
+    'voltage',
+    'stationType'
+  ]);
+
+  var cleanBody = createCleanObject(bodyToUpdate);
+
+  if (Object.keys(cleanBody || {}).length === 0) {
+    return res.status(400).send();
+  }
+
+  Station.findOneAndUpdate({ _id: id }, { $set: cleanBody }, { new: true })
+    .then(station => {
+      if (!station) {
+        return res.status(404).send();
+      }
+      res.send({ station });
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
 // **********************************************
 // ***************** ARC CALCS ******************
 // **********************************************
@@ -136,7 +178,6 @@ app.post('/arccalc', (req, res) => {
     .catch(e => {
       console.log(e);
       res.status(400).send(e);
-      a;
     });
 });
 

@@ -172,3 +172,64 @@ describe('DELETE /stations/:id', () => {
       .end(done);
   });
 });
+
+describe('PATCH /stations/:id', () => {
+  it('should update station', done => {
+    var hexId = stations[0]._id.toHexString();
+    var updatedName = 'Updated Station';
+    request(app)
+      .patch(`/stations/${hexId}`)
+      .send({ name: updatedName })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.station.name).toBe(updatedName);
+      })
+      .end(done);
+  });
+
+  it('should not update station if name is all white spaces', done => {
+    var id = stations[0]._id;
+    var updatedName = '        ';
+    request(app)
+      .patch(`/stations/${id.toHexString()}`)
+      .send({ name: updatedName })
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Station.findById(id)
+          .then(station => {
+            expect(station.name).toBe(stations[0].name);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  // I NEED TO ADD THIS. I NEED TO CHECK THE DATA WHEN I CLEAN THE BODY
+  //   it('should not update a station with invalid body', done => {
+  //     var id = stations[1]._id;
+  //     request(app)
+  //       .patch(`/stations/${id.toHexString()}`)
+  //       .send({ division: 'Invalid Division' })
+  //       .expect(400)
+  //       .end((err, res) => {
+  //         if (err) {
+  //           done(err);
+  //         }
+
+  //         Station.findById(id)
+  //           .then(station => {
+  //             expect(station.division).toBe('Ocean State');
+  //             done();
+  //           })
+  //           .catch(e => {
+  //             done(e);
+  //           });
+  //       });
+  //   });
+});
