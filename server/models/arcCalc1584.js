@@ -18,7 +18,7 @@ const areaEnums = [
   'Ocean State'
 ];
 
-// ['sub', 'faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
+// ['sub', 'area', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
 // ['arcCurrent', 'incidentEnergy', 'eightCalBoundary', 'hrcLevel' ]
 
 var ArcCalc1584 = mongoose.model('ArcCalc', {

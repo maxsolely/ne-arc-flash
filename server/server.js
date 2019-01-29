@@ -3,6 +3,7 @@ const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const calculate = require('./calculate1584');
 const { ObjectID } = require('mongodb');
 var { mongoose } = require('./db/mongoose');
 var { Station } = require('./models/station');
@@ -179,6 +180,22 @@ app.post('/arccalc', (req, res) => {
       console.log(e);
       res.status(400).send(e);
     });
+});
+
+app.post('/arccalc1584', (req, res) => {
+  var bodyCalcParams = _.pick(req.body.calcParams, [
+    'sub',
+    'area',
+    'faultType',
+    'stationConfig',
+    'grounded',
+    'lineVoltage',
+    'faultCurrent',
+    'relayOpTime'
+  ]);
+
+  var results = calculate.calculated1584Results(bodyCalcParams);
+  res.send({ results });
 });
 
 app.listen(port, () => {
