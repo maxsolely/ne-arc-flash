@@ -7,11 +7,22 @@ const calculate = require('./calculate1584');
 const { ObjectID } = require('mongodb');
 var { mongoose } = require('./db/mongoose');
 var { Station } = require('./models/station');
-var { ArcCalc } = require('./models/arcCalc');
+//var { ArcCalc } = require('./models/arcCalc');
+var { ArcCalc1584 } = require('./models/arcCalc1584');
 
 var port = process.env.PORT;
 var app = express();
 app.use(bodyParser.json());
+
+//global vars
+const divisionEnums = [
+  'Bay State West',
+  'North and Granite',
+  'Bay State South',
+  'Ocean State'
+];
+
+const stationConfigEnums = ['Metalclad', 'Open-Air'];
 
 function createCleanObject(obj) {
   var clonedObject = _.cloneDeep(obj);
@@ -29,7 +40,7 @@ function createCleanObject(obj) {
 // **********************************************
 
 app.post('/stations', (req, res) => {
-  var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationType']);
+  var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationConfig']);
   var station = new Station({ ...body });
 
   station
@@ -103,13 +114,30 @@ app.patch('/stations/:id', (req, res) => {
     'name',
     'division',
     'voltage',
-    'stationType'
+    'stationConfig'
   ]);
 
   var cleanBody = createCleanObject(bodyToUpdate);
 
+  // if the body is empty
   if (Object.keys(cleanBody || {}).length === 0) {
     return res.status(400).send();
+  }
+
+  // if bodyToUpdate has a division key and it is not a valid option
+  if (
+    cleanBody.hasOwnProperty('division') &&
+    divisionEnums.indexOf(cleanBody.division) < 0
+  ) {
+    return res.status(400).send('invalid division');
+  }
+
+  // if the stationConfig is not correct
+  if (
+    cleanBody.hasOwnProperty('stationConfig') &&
+    stationConfigEnums.indexOf(cleanBody.stationConfig) < 0
+  ) {
+    return res.status(400).send('invalid station configuration');
   }
 
   Station.findOneAndUpdate({ _id: id }, { $set: cleanBody }, { new: true })
@@ -127,48 +155,34 @@ app.patch('/stations/:id', (req, res) => {
 // ***************** ARC CALCS ******************
 // **********************************************
 
-app.post('/arccalc', (req, res) => {
+app.post('/arccalc1584', (req, res) => {
   var bodyCalcParams = _.pick(req.body.calcParams, [
-    'sub1',
-    'sub2',
-    'faultCurrent',
-    'relayOpTime',
-    'lineVoltage',
-    'lineNumber',
+    'sub',
+    'division',
     'faultType',
-    'stationType',
-    'grounded'
-  ]);
-  var bodyArcCaseInput = _.pick(req.body.arcCaseInput, [
-    'current',
-    'sourceVoltage',
-    'duration',
-    'electrodeMaterial',
-    'distanceToArc'
-  ]);
-  var bodyResults = _.pick(req.body.results, [
-    'arcVoltage',
-    'arcEnergy',
-    'incidentEnergy',
-    'hrcLevel'
+    'stationConfig',
+    'grounded',
+    'lineVoltage',
+    'faultCurrent',
+    'relayOpTime'
   ]);
 
-  Station.findOne({ name: bodyCalcParams.sub1 })
+  var results = calculate.calculated1584Results(bodyCalcParams);
+
+  Station.findOne({ name: bodyCalcParams.sub })
     .then(station => {
-      console.log(station);
-      var arcCalc = new ArcCalc({
+      var arcCalc1584 = new ArcCalc1584({
         calcParams: { ...bodyCalcParams },
-        arcCaseInput: { ...bodyArcCaseInput },
-        results: { ...bodyResults }
+        results: { ...results }
       });
 
-      arcCalc
+      arcCalc1584
         .save()
-        .then(arcCalc => {
-          station.stationCalcs.push(arcCalc);
+        .then(arcCalc1584 => {
+          station.stationCalcs.push(arcCalc1584);
           station
             .save()
-            .then(res.send(arcCalc))
+            .then(res.send(arcCalc1584))
             .catch(e => console.error(e));
         })
         .catch(e => {
@@ -180,22 +194,6 @@ app.post('/arccalc', (req, res) => {
       console.log(e);
       res.status(400).send(e);
     });
-});
-
-app.post('/arccalc1584', (req, res) => {
-  var bodyCalcParams = _.pick(req.body.calcParams, [
-    'sub',
-    'area',
-    'faultType',
-    'stationConfig',
-    'grounded',
-    'lineVoltage',
-    'faultCurrent',
-    'relayOpTime'
-  ]);
-
-  var results = calculate.calculated1584Results(bodyCalcParams);
-  res.send({ results });
 });
 
 app.listen(port, () => {

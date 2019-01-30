@@ -1,4 +1,4 @@
-// ['sub', 'area', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
+// ['sub', 'division', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
 
 var dummyData = {
   stationConfig: 'Metalclad',
@@ -48,7 +48,7 @@ var calculated1584Results = calcParams => {
     (totalClearingTime / 0.2) *
     (Math.pow(610, distanceFactor) / Math.pow(workDistancemm, distanceFactor));
 
-  var eightCal =
+  var eightCalBoundary =
     Math.pow(
       4.184 *
         Math.exp(incidentEnergyExpPower) *
@@ -57,18 +57,18 @@ var calculated1584Results = calcParams => {
       1 / distanceFactor
     ) / 25.4;
 
-  console.log(
-    k1,
-    k2,
-    distanceFactor,
-    arcGapInches,
-    workDistanceInches,
-    arcCurrent,
-    incidentEnergy,
-    eightCal
-  );
+  //   console.log(
+  //     k1,
+  //     k2,
+  //     distanceFactor,
+  //     arcGapInches,
+  //     workDistanceInches,
+  //     arcCurrent,
+  //     incidentEnergy,
+  //     eightCal
+  //   );
 
-  return { arcCurrent, incidentEnergy, eightCal };
+  return { arcCurrent, incidentEnergy, eightCalBoundary };
 };
 
 // calculated1684Results(dummyData);

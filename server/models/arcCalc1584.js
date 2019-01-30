@@ -11,14 +11,14 @@ const voltageEnums = [
   '13.2 kV',
   '13.8 kV'
 ];
-const areaEnums = [
+const divisionEnums = [
   'Bay State West',
   'North and Granite',
   'Bay State South',
   'Ocean State'
 ];
 
-// ['sub', 'area', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
+// ['sub', 'division', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
 // ['arcCurrent', 'incidentEnergy', 'eightCalBoundary', 'hrcLevel' ]
 
 var ArcCalc1584 = mongoose.model('ArcCalc', {
@@ -28,11 +28,11 @@ var ArcCalc1584 = mongoose.model('ArcCalc', {
       trim: true,
       required: true
     },
-    area: {
+    division: {
       type: String,
       trim: true,
       required: true,
-      enum: areaEnums
+      enum: divisionEnums
     },
     faultType: {
       type: String,
@@ -74,10 +74,6 @@ var ArcCalc1584 = mongoose.model('ArcCalc', {
     },
     eightCalBoundary: {
       type: Number,
-      required: true
-    },
-    hrcLevel: {
-      type: String,
       required: true
     }
   }

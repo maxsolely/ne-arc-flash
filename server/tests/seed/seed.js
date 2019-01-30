@@ -6,16 +6,16 @@ const stations = [
   {
     _id: new ObjectID(),
     name: 'Test Station',
-    division: 'Worcester',
+    division: 'Bay State West',
     voltage: '13.8 kV',
-    stationType: 'Metalclad'
+    stationConfig: 'Metalclad'
   },
   {
     _id: new ObjectID(),
     name: 'Dummy Station',
     division: 'Ocean State',
     voltage: '115 kV',
-    stationType: 'Open-Air'
+    stationConfig: 'Open-Air'
   }
 ];
 

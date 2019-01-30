@@ -10,14 +10,14 @@ beforeEach(populateStations);
 
 describe('POST /stations', () => {
   var name = 'My First Station';
-  var division = 'Worcester';
+  var division = 'Bay State West';
   var voltage = '13.8 kV';
-  var stationType = 'Metalclad';
+  var stationConfig = 'Metalclad';
 
   it('should add a new station', done => {
     request(app)
       .post('/stations')
-      .send({ name, division, voltage, stationType })
+      .send({ name, division, voltage, stationConfig })
       .expect(200)
       .expect(res => {
         expect(res.body.name).toBe(name);
@@ -42,7 +42,7 @@ describe('POST /stations', () => {
   it('should not add a station with the same name', done => {
     request(app)
       .post('/stations')
-      .send({ name: 'Test Station', division, voltage, stationType })
+      .send({ name: 'Test Station', division, voltage, stationConfig })
       .expect(400)
       .end((err, res) => {
         if (err) {
@@ -63,7 +63,7 @@ describe('POST /stations', () => {
   it('should not add a station with invalid body', done => {
     request(app)
       .post('/stations')
-      .send({ name, division: 'Invalid Division', voltage, stationType })
+      .send({ name, division: 'Invalid Division', voltage, stationConfig })
       .expect(400)
       .end((err, res) => {
         if (err) {

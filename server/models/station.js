@@ -11,14 +11,19 @@ var Station = mongoose.model('Station', {
   division: {
     type: String,
     required: true,
-    enum: ['Ocean State', 'Worcester', 'North and Granite']
+    enum: [
+      'Ocean State',
+      'Bay State West',
+      'Bay State South',
+      'North and Granite'
+    ]
   },
   voltage: {
     type: String,
     required: true,
     enum: voltageEnums
   },
-  stationType: {
+  stationConfig: {
     type: String,
     required: true,
     enum: ['Metalclad', 'Open-Air']
