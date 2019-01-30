@@ -19,6 +19,17 @@ const stations = [
   }
 ];
 
+const arcCalc1584 = {
+  sub: 'Test Station',
+  division: 'Bay State West',
+  faultType: '3 phase',
+  stationConfig: 'Metalclad',
+  grounded: true,
+  lineVoltage: 13.8,
+  faultCurrent: 5432,
+  relayOpTime: 0.973
+};
+
 const populateStations = done => {
   Station.remove({})
     .then(() => {
@@ -27,4 +38,4 @@ const populateStations = done => {
     .then(() => done());
 };
 
-module.exports = { stations, populateStations };
+module.exports = { stations, arcCalc1584, populateStations };

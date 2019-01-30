@@ -4,7 +4,7 @@ const { ObjectID } = require('mongodb');
 
 var { app } = require('./../server');
 const { Station } = require('./../models/station');
-const { stations, populateStations } = require('./seed/seed');
+const { stations, arcCalc1584, populateStations } = require('./seed/seed');
 
 beforeEach(populateStations);
 
@@ -210,26 +210,73 @@ describe('PATCH /stations/:id', () => {
       });
   });
 
-  // I NEED TO ADD THIS. I NEED TO CHECK THE DATA WHEN I CLEAN THE BODY
-  //   it('should not update a station with invalid body', done => {
-  //     var id = stations[1]._id;
-  //     request(app)
-  //       .patch(`/stations/${id.toHexString()}`)
-  //       .send({ division: 'Invalid Division' })
-  //       .expect(400)
-  //       .end((err, res) => {
-  //         if (err) {
-  //           done(err);
-  //         }
+  it('should not update if division is invalid', done => {
+    var id = stations[0]._id;
+    var updatedDivision = 'Invalid';
+    request(app)
+      .patch(`/stations/${id.toHexString()}`)
+      .send({ division: updatedDivision })
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
 
-  //         Station.findById(id)
-  //           .then(station => {
-  //             expect(station.division).toBe('Ocean State');
-  //             done();
-  //           })
-  //           .catch(e => {
-  //             done(e);
-  //           });
-  //       });
-  //   });
+        Station.findById(id)
+          .then(station => {
+            expect(station.division).toBe(stations[0].division);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should not update if stationConfig is invalid', done => {
+    var id = stations[0]._id;
+    var updatedStationConfig = 'Invalid';
+    request(app)
+      .patch(`/stations/${id.toHexString()}`)
+      .send({ stationConfig: updatedStationConfig })
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Station.findById(id)
+          .then(station => {
+            expect(station.stationConfig).toBe(stations[0].stationConfig);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+});
+
+describe('POST /arccalc1584', () => {
+  it('should post an arc flash calculation', done => {
+    var calcParams = arcCalc1584;
+    request(app)
+      .post('/arccalc1584')
+      .send({ calcParams })
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Station.findOne({ name: calcParams.sub })
+          .then(station => {
+            expect(station.stationCalcs.length).toBe(1);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
 });

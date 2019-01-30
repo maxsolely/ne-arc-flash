@@ -140,6 +140,13 @@ app.patch('/stations/:id', (req, res) => {
     return res.status(400).send('invalid station configuration');
   }
 
+  //   // if bodyToUpdate has a name property
+  // if (cleanBody.hasOwnProperty('name')) {
+  //   Station.findOne({name: cleanBody.name}).then(station => {
+
+  //   })
+  // }
+
   Station.findOneAndUpdate({ _id: id }, { $set: cleanBody }, { new: true })
     .then(station => {
       if (!station) {
