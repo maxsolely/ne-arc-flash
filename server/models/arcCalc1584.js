@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+// Because I want enums, I need to make voltage a string. When I do the calculation in 'calculate1584.js' I will trim the last 3 chars(' kV') and convert the string to a number
 const voltageEnums = [
   '2.4 kV',
   '4.1 kV',
@@ -43,6 +44,7 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
     stationConfig: {
       type: String,
       required: true,
+      trim: true,
       enum: ['Metalclad', 'Open-Air']
     },
     grounded: {
@@ -50,7 +52,8 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
       required: true
     },
     lineVoltage: {
-      type: Number,
+      type: String,
+      trim: true,
       required: true,
       enum: voltageEnums
     },

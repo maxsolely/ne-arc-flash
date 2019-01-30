@@ -8,7 +8,8 @@ var dummyData = {
   relayOpTime: 0.873
 };
 
-var calculated1584Results = calcParams => {
+var calculate1584Results = calcParams => {
+  var lineVoltage = parseFloat(calcParams.lineVoltage);
   var arcGapInches;
   var workDistanceInches;
   var k1 = calcParams.stationConfig === 'Open-Air' ? -0.792 : -0.555;
@@ -17,17 +18,13 @@ var calculated1584Results = calcParams => {
   var totalClearingTime = calcParams.relayOpTime + 0.108;
 
   if (calcParams.stationConfig === 'Open-Air') {
-    arcGapInches =
-      calcParams.lineVoltage >= 11.5 && calcParams.lineVoltage <= 13.2
-        ? 9
-        : 6.2;
+    arcGapInches = lineVoltage >= 11.5 && lineVoltage <= 13.2 ? 9 : 6.2;
   } else if (calcParams.stationConfig === 'Metalclad') {
-    arcGapInches = calcParams.lineVoltage < 13.2 ? 4 : 6;
+    arcGapInches = lineVoltage < 13.2 ? 4 : 6;
   }
 
   if (calcParams.stationConfig === 'Open-Air') {
-    workDistanceInches =
-      calcParams.lineVoltage > 4.16 && calcParams.lineVoltage < 11.5 ? 25 : 26;
+    workDistanceInches = lineVoltage > 4.16 && lineVoltage < 11.5 ? 25 : 26;
   } else if (calcParams.stationConfig === 'Metalclad') {
     workDistanceInches = 36;
   }
@@ -73,4 +70,4 @@ var calculated1584Results = calcParams => {
 
 // calculated1684Results(dummyData);
 
-module.exports = { calculated1584Results };
+module.exports = { calculate1584Results };

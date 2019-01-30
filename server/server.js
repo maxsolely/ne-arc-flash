@@ -174,7 +174,7 @@ app.post('/arccalc1584', (req, res) => {
     'relayOpTime'
   ]);
 
-  var results = calculate.calculated1584Results(bodyCalcParams);
+  var results = calculate.calculate1584Results(bodyCalcParams);
 
   Station.findOne({ name: bodyCalcParams.sub })
     .then(station => {

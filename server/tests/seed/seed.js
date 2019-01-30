@@ -12,14 +12,14 @@ const arcCalc1584calculations = [
       faultType: '3 phase',
       stationConfig: 'Metalclad',
       grounded: true,
-      lineVoltage: 13.8,
+      lineVoltage: '13.8 kV',
       faultCurrent: 5432,
       relayOpTime: 0.973
     },
     results: {
       arcCurrent: 5.327,
-      incidentEnergy: 9.114,
-      eightCalBoundary: 41.16
+      incidentEnergy: 7.03,
+      eightCalBoundary: 31.5
     }
   },
   {
@@ -30,14 +30,14 @@ const arcCalc1584calculations = [
       faultType: '3 phase',
       stationConfig: 'Metalclad',
       grounded: true,
-      lineVoltage: 4.16,
-      faultCurrent: 1042,
-      relayOpTime: 0.321
+      lineVoltage: '4.16 kV',
+      faultCurrent: 10042,
+      relayOpTime: 0.521
     },
     results: {
-      arcCurrent: 1.051,
-      incidentEnergy: 0.55,
-      eightCalBoundary: 2.298
+      arcCurrent: 9.746,
+      incidentEnergy: 6.91,
+      eightCalBoundary: 30.95
     }
   }
 ];
