@@ -186,7 +186,7 @@ app.post('/arccalc1584', (req, res) => {
       arcCalc1584
         .save()
         .then(arcCalc1584 => {
-          station.stationCalcs.push(arcCalc1584);
+          station.stationCalcs.push(arcCalc1584._id);
           station
             .save()
             .then(res.send(arcCalc1584))
@@ -199,6 +199,35 @@ app.post('/arccalc1584', (req, res) => {
     })
     .catch(e => {
       console.log(e);
+      res.status(400).send(e);
+    });
+});
+
+app.get('/arccalc1584', (req, res) => {
+  ArcCalc1584.find()
+    .then(calculations => {
+      res.send({ calculations });
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
+
+app.get('/arccalc1584/:id', (req, res) => {
+  var id = req.params.id;
+  //If ID is not valid
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  ArcCalc1584.findOne({ _id: id })
+    .then(calculation => {
+      if (!calculation) {
+        res.status(404).send();
+      }
+      res.send({ calculation });
+    })
+    .catch(e => {
       res.status(400).send(e);
     });
 });

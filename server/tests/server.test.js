@@ -4,9 +4,16 @@ const { ObjectID } = require('mongodb');
 
 var { app } = require('./../server');
 const { Station } = require('./../models/station');
-const { stations, arcCalc1584, populateStations } = require('./seed/seed');
+const { ArcCalc1584 } = require('./../models/arcCalc1584');
+const {
+  stations,
+  arcCalc1584calculations,
+  populateStations,
+  populate1584calculations
+} = require('./seed/seed');
 
 beforeEach(populateStations);
+beforeEach(populate1584calculations);
 
 describe('POST /stations', () => {
   var name = 'My First Station';
@@ -259,7 +266,7 @@ describe('PATCH /stations/:id', () => {
 
 describe('POST /arccalc1584', () => {
   it('should post an arc flash calculation', done => {
-    var calcParams = arcCalc1584;
+    var calcParams = arcCalc1584calculations[0].calcParams;
     request(app)
       .post('/arccalc1584')
       .send({ calcParams })
@@ -271,12 +278,64 @@ describe('POST /arccalc1584', () => {
 
         Station.findOne({ name: calcParams.sub })
           .then(station => {
-            expect(station.stationCalcs.length).toBe(1);
+            expect(station.stationCalcs.length).toBe(3);
             done();
           })
           .catch(e => {
             done(e);
           });
       });
+  });
+});
+
+describe('GET /arccalc1584', () => {
+  it('should return all 1584 calculations in the database', done => {
+    request(app)
+      .get('/arccalc1584')
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        }
+
+        ArcCalc1584.find()
+          .then(calculations => {
+            expect(calculations.length).toBe(2);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+});
+
+describe('GET /arccalc1584/:id', () => {
+  it('should return the 1584 calulation with the requested id', done => {
+    var id = arcCalc1584calculations[0]._id.toHexString();
+    request(app)
+      .get(`/arccalc1584/${id}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.calculation.calcParams.faultCurrent).toBe(
+          arcCalc1584calculations[0].calcParams.faultCurrent
+        );
+      })
+      .end(done);
+  });
+
+  it('should return 404 if 1584 calculation not found', done => {
+    var unkownId = new ObjectID().toHexString;
+    request(app)
+      .get(`/arccalc1584/${unkownId}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .get(`/arccalc1584/123`)
+      .expect(404)
+      .end(done);
   });
 });

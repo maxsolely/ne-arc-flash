@@ -21,7 +21,7 @@ const divisionEnums = [
 // ['sub', 'division', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
 // ['arcCurrent', 'incidentEnergy', 'eightCalBoundary', 'hrcLevel' ]
 
-var ArcCalc1584 = mongoose.model('ArcCalc', {
+var ArcCalc1584 = mongoose.model('ArcCalc1584', {
   calcParams: {
     sub: {
       type: String,
