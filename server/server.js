@@ -174,13 +174,14 @@ app.post('/arccalc1584', (req, res) => {
     'grounded',
     'lineVoltage',
     'faultCurrent',
-    'relayOpTime'
+    'relayOpTime',
+    'comment'
   ]);
 
   // if calcParams is missing a value (which would make at least one of the results NaN), then calculate1584.js will return an empty object
   var results = calculate.calculate1584Results(bodyCalcParams);
 
-  if (Object.keys(results).length === 3) {
+  if (Object.keys(results).length === 4) {
     Station.findOne({
       name: bodyCalcParams.sub,
       voltage: bodyCalcParams.lineVoltage
@@ -266,9 +267,9 @@ app.delete('/arccalc1584/:id', (req, res) => {
         if (!station) {
           return res.status(404).send('substation does not exist in database');
         } else {
-          var updatedStationCalcs = station.stationCalcs.filter(value => {
-            value != id;
-          });
+          var updatedStationCalcs = station.stationCalcs.filter(
+            value => value != id
+          );
           Station.findOneAndUpdate(
             { _id: station._id },
             { $set: { stationCalcs: updatedStationCalcs } },

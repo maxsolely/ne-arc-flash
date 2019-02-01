@@ -12,6 +12,7 @@ var calculate1584Results = calcParams => {
   var lineVoltage = parseFloat(calcParams.lineVoltage);
   var arcGapInches;
   var workDistanceInches;
+  var hrcLevel;
   var k1 = calcParams.stationConfig === 'Open-Air' ? -0.792 : -0.555;
   var k2 = calcParams.grounded ? -0.113 : 0;
   var distanceFactor = calcParams.stationConfig === 'Open-Air' ? 2 : 0.973;
@@ -54,10 +55,22 @@ var calculate1584Results = calcParams => {
       1 / distanceFactor
     ) / 25.4;
 
+  if (incidentEnergy <= 4) {
+    hrcLevel = '1';
+  } else if (incidentEnergy > 4 && incidentEnergy <= 8) {
+    hrcLevel = '2';
+  } else if (incidentEnergy > 8 && incidentEnergy <= 25) {
+    hrcLevel = '3';
+  } else if (incidentEnergy > 25 && incidentEnergy <= 40) {
+    hrcLevel = '4';
+  } else {
+    hrcLevel = 'Exceeds Level 4';
+  }
+
   if (isNaN(arcCurrent) || isNaN(incidentEnergy) || isNaN(eightCalBoundary)) {
     return {};
   } else {
-    return { arcCurrent, incidentEnergy, eightCalBoundary };
+    return { arcCurrent, incidentEnergy, eightCalBoundary, hrcLevel };
   }
 };
 

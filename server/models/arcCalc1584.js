@@ -19,6 +19,8 @@ const divisionEnums = [
   'Ocean State'
 ];
 
+const hrcEnums = ['1', '2', '3', '4', 'Exceeds Level 4'];
+
 // ['sub', 'division', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
 // ['arcCurrent', 'incidentEnergy', 'eightCalBoundary', 'hrcLevel' ]
 
@@ -64,6 +66,9 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
     relayOpTime: {
       type: Number,
       required: true
+    },
+    comment: {
+      type: String
     }
   },
   results: {
@@ -78,6 +83,11 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
     eightCalBoundary: {
       type: Number,
       required: true
+    },
+    hrcLevel: {
+      type: String,
+      required: true,
+      enum: hrcEnums
     }
   }
 });

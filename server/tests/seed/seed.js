@@ -14,12 +14,14 @@ const arcCalc1584calculations = [
       grounded: true,
       lineVoltage: '13.8 kV',
       faultCurrent: 5432,
-      relayOpTime: 0.973
+      relayOpTime: 0.973,
+      comment: 'No comment'
     },
     results: {
       arcCurrent: 5.327,
       incidentEnergy: 7.03,
-      eightCalBoundary: 31.5
+      eightCalBoundary: 31.5,
+      hrcLevel: '2'
     }
   },
   {
@@ -32,12 +34,14 @@ const arcCalc1584calculations = [
       grounded: true,
       lineVoltage: '13.8 kV',
       faultCurrent: 10042,
-      relayOpTime: 0.521
+      relayOpTime: 0.521,
+      comment: 'No Comment'
     },
     results: {
       arcCurrent: 9.746,
       incidentEnergy: 6.91,
-      eightCalBoundary: 30.95
+      eightCalBoundary: 30.95,
+      hrcLevel: '2'
     }
   }
 ];
