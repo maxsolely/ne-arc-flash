@@ -35,9 +35,9 @@ function createCleanObject(obj) {
   return clonedObject;
 }
 
-// **********************************************
-// ****************** STATIONS ******************
-// **********************************************
+// ********************************************************************************************
+// ************************************      STATIONS      ************************************
+// ********************************************************************************************
 
 app.post('/stations', (req, res) => {
   var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationConfig']);
@@ -149,13 +149,6 @@ app.patch('/stations/:id', (req, res) => {
     return res.status(400).send('invalid station configuration');
   }
 
-  //   // if bodyToUpdate has a name property
-  // if (cleanBody.hasOwnProperty('name')) {
-  //   Station.findOne({name: cleanBody.name}).then(station => {
-
-  //   })
-  // }
-
   Station.findOneAndUpdate({ _id: id }, { $set: cleanBody }, { new: true })
     .then(station => {
       if (!station) {
@@ -167,9 +160,10 @@ app.patch('/stations/:id', (req, res) => {
       res.status(400).send(e);
     });
 });
-// **********************************************
-// ***************** ARC CALCS ******************
-// **********************************************
+
+// ********************************************************************************************
+// ********************************      1584 ARC CALCS       *********************************
+// ********************************************************************************************
 
 app.post('/arccalc1584', (req, res) => {
   var bodyCalcParams = _.pick(req.body.calcParams, [
@@ -248,6 +242,54 @@ app.get('/arccalc1584/:id', (req, res) => {
     })
     .catch(e => {
       res.status(400).send(e);
+    });
+});
+
+app.delete('/arccalc1584/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  ArcCalc1584.findOneAndDelete({
+    _id: id
+  })
+    .then(calculation => {
+      if (!calculation) {
+        return res.status(404).send();
+      }
+      Station.findOne({
+        name: calculation.calcParams.sub,
+        voltage: calculation.calcParams.lineVoltage
+      }).then(station => {
+        if (!station) {
+          return res.status(404).send('substation does not exist in database');
+        } else {
+          var updatedStationCalcs = station.stationCalcs.filter(value => {
+            value != id;
+          });
+          Station.findOneAndUpdate(
+            { _id: station._id },
+            { $set: { stationCalcs: updatedStationCalcs } },
+            { new: true }
+          ).then(updatedStation => {
+            if (!updatedStation) {
+              return res.status(400).send();
+            }
+            res.send({ updatedStation });
+          });
+          // .catch(e => {
+          //   res.status(400).send(e);
+          // });
+        }
+      });
+      // .catch(e => {
+      //   res.status(400).send(e);
+      // });
+    })
+    .catch(e => {
+      res.status(400), send(e);
     });
 });
 

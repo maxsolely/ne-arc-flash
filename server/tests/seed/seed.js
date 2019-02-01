@@ -30,7 +30,7 @@ const arcCalc1584calculations = [
       faultType: '3 phase',
       stationConfig: 'Metalclad',
       grounded: true,
-      lineVoltage: '4.16 kV',
+      lineVoltage: '13.8 kV',
       faultCurrent: 10042,
       relayOpTime: 0.521
     },
