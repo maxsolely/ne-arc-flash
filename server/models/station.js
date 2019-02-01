@@ -6,8 +6,7 @@ var Station = mongoose.model('Station', {
   name: {
     type: String,
     required: true,
-    trim: true,
-    unique: true
+    trim: true
   },
   division: {
     type: String,

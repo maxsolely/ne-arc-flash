@@ -46,10 +46,46 @@ describe('POST /stations', () => {
       });
   });
 
-  it('should not add a station with the same name', done => {
+  it('should add a station with the same name but different voltage', done => {
     request(app)
       .post('/stations')
-      .send({ name: 'Test Station', division, voltage, stationConfig })
+      .send({
+        name: 'Test Station',
+        division,
+        voltage: '69 kV',
+        stationConfig
+      })
+      .expect(200)
+      .expect(res => {
+        expect(res.body.name).toBe('Test Station');
+        expect(res.body.voltage).toBe('69 kV');
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Station.findOne({ name: 'Test Station', voltage: '69 kV' })
+          .then(station => {
+            expect(station.name).toBe('Test Station');
+            expect(station.voltage).toBe('69 kV');
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should not add a station with the same name and voltage', done => {
+    request(app)
+      .post('/stations')
+      .send({
+        name: 'Test Station',
+        division,
+        voltage: '13.8 kV',
+        stationConfig
+      })
       .expect(400)
       .end((err, res) => {
         if (err) {
@@ -285,6 +321,54 @@ describe('POST /arccalc1584', () => {
             done(e);
           });
       });
+  });
+
+  it('should not post an arc flash calculation if there is missing data', done => {
+    // missing relayOpTime
+    var calcParams = {
+      sub: 'Test Station',
+      division: 'Bay State West',
+      faultType: '3 phase',
+      stationConfig: 'Metalclad',
+      lineVoltage: '13.8 kV',
+      grounded: true,
+      faultCurrent: 10042
+    };
+    request(app)
+      .post('/arccalc1584')
+      .send({ calcParams })
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        Station.findOne({ name: calcParams.sub })
+          .then(station => {
+            expect(station.stationCalcs.length).toBe(2);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should return 404 if there is no associated substation in the database', done => {
+    var calcParams = {
+      sub: 'Test Station',
+      division: 'Bay State West',
+      faultType: '3 phase',
+      stationConfig: 'Metalclad',
+      lineVoltage: '69 kV',
+      grounded: true,
+      faultCurrent: 10042,
+      relayOpTime: 0.983
+    };
+    request(app)
+      .post('/arccalc1584')
+      .send({ calcParams })
+      .expect(404)
+      .end(done);
   });
 });
 

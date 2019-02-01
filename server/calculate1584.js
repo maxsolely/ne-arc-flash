@@ -54,18 +54,11 @@ var calculate1584Results = calcParams => {
       1 / distanceFactor
     ) / 25.4;
 
-  //   console.log(
-  //     k1,
-  //     k2,
-  //     distanceFactor,
-  //     arcGapInches,
-  //     workDistanceInches,
-  //     arcCurrent,
-  //     incidentEnergy,
-  //     eightCal
-  //   );
-
-  return { arcCurrent, incidentEnergy, eightCalBoundary };
+  if (isNaN(arcCurrent) || isNaN(incidentEnergy) || isNaN(eightCalBoundary)) {
+    return {};
+  } else {
+    return { arcCurrent, incidentEnergy, eightCalBoundary };
+  }
 };
 
 // calculated1684Results(dummyData);

@@ -41,16 +41,25 @@ function createCleanObject(obj) {
 
 app.post('/stations', (req, res) => {
   var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationConfig']);
-  var station = new Station({ ...body });
-
-  station
-    .save()
-    .then(station => {
-      res.send(station);
-    })
-    .catch(e => {
-      res.status(400).send(e);
-    });
+  Station.findOne({ name: body.name, voltage: body.voltage }).then(station => {
+    if (!station) {
+      var newStation = new Station({ ...body });
+      newStation
+        .save()
+        .then(station => {
+          res.send(station);
+        })
+        .catch(e => {
+          res.status(400).send(e);
+        });
+    } else {
+      res
+        .status(400)
+        .send(
+          'A station with that name and voltage is already in the database'
+        );
+    }
+  });
 });
 
 app.get('/stations', (req, res) => {
@@ -174,33 +183,43 @@ app.post('/arccalc1584', (req, res) => {
     'relayOpTime'
   ]);
 
+  // if calcParams is missing a value (which would make at least one of the results NaN), then calculate1584.js will return an empty object
   var results = calculate.calculate1584Results(bodyCalcParams);
 
-  Station.findOne({ name: bodyCalcParams.sub })
-    .then(station => {
-      var arcCalc1584 = new ArcCalc1584({
-        calcParams: { ...bodyCalcParams },
-        results: { ...results }
-      });
-
-      arcCalc1584
-        .save()
-        .then(arcCalc1584 => {
-          station.stationCalcs.push(arcCalc1584._id);
-          station
-            .save()
-            .then(res.send(arcCalc1584))
-            .catch(e => console.error(e));
-        })
-        .catch(e => {
-          console.log(e);
-          res.status(400).send(e);
-        });
+  if (Object.keys(results).length === 3) {
+    Station.findOne({
+      name: bodyCalcParams.sub,
+      voltage: bodyCalcParams.lineVoltage
     })
-    .catch(e => {
-      console.log(e);
-      res.status(400).send(e);
-    });
+      .then(station => {
+        if (!station) {
+          return res.status(404).send('substation does not exist in database');
+        } else {
+          var arcCalc1584 = new ArcCalc1584({
+            calcParams: { ...bodyCalcParams },
+            results: { ...results }
+          });
+
+          arcCalc1584
+            .save()
+            .then(arcCalc1584 => {
+              station.stationCalcs.push(arcCalc1584._id);
+              station
+                .save()
+                .then(res.send(arcCalc1584))
+                .catch(e => console.error(e));
+            })
+            .catch(e => {
+              res.status(400).send(e);
+            });
+        }
+      })
+      .catch(e => {
+        res.status(400).send(e);
+      });
+  } else {
+    res.status(400).send();
+  }
 });
 
 app.get('/arccalc1584', (req, res) => {
