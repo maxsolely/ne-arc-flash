@@ -423,3 +423,56 @@ describe('GET /arccalc1584/:id', () => {
       .end(done);
   });
 });
+
+describe('DELETE /arccalc1584/:id', () => {
+  it('should return the updated station without the calculation in stationCalcs upon successful deletion', done => {
+    var id = arcCalc1584calculations[0]._id.toHexString();
+    request(app)
+      .delete(`/arccalc1584/${id}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.updatedStation.stationCalcs.length).toBe(1);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        ArcCalc1584.findById(id)
+          .then(calculation => {
+            expect(calculation).toBeNull();
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should return 404 if 1584 calculation not found', done => {
+    var unkownId = new ObjectID().toHexString;
+    request(app)
+      .get(`/arccalc1584/${unkownId}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .get(`/arccalc1584/123`)
+      .expect(404)
+      .end(done);
+  });
+
+  // I dont know if I even need to do this. Especially if I will be implementing deleting all associated calculations when I delete a station
+
+  // it('should return 404 if associated station is not found', done => {
+  //   arcCalc1584calculations[0].calcParams['sub'] = 'Unkown Station';
+  //   console.log(arcCalc1584calculations[0].calcParams['sub']);
+  //   var id = arcCalc1584calculations[0]._id.toHexString();
+  //   request(app)
+  //     .delete(`/arccalc1584/${id}`)
+  //     .expect(404)
+  //     .end(done);
+  // });
+});

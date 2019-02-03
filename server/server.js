@@ -264,6 +264,7 @@ app.delete('/arccalc1584/:id', (req, res) => {
         name: calculation.calcParams.sub,
         voltage: calculation.calcParams.lineVoltage
       }).then(station => {
+        //might not need this else-if check if I will delete all calculations if the station is deleted.
         if (!station) {
           return res.status(404).send('substation does not exist in database');
         } else {
@@ -280,14 +281,8 @@ app.delete('/arccalc1584/:id', (req, res) => {
             }
             res.send({ updatedStation });
           });
-          // .catch(e => {
-          //   res.status(400).send(e);
-          // });
         }
       });
-      // .catch(e => {
-      //   res.status(400).send(e);
-      // });
     })
     .catch(e => {
       res.status(400), send(e);
