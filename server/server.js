@@ -102,13 +102,45 @@ app.delete('/stations/:id', (req, res) => {
     _id: id
   })
     .then(station => {
-      if (!station) {
+      if (!station || !station.stationCalcs) {
         res.status(404).send();
       }
-      res.send({ station });
+
+      if (station.stationCalcs.length >= 1) {
+        const stationCalculationsProm = station.stationCalcs.map(
+          stationCalc => {
+            console.log(stationCalc);
+            return ArcCalc1584.findByIdAndDelete({
+              _id: stationCalc
+            }).catch(e => {
+              console.log(e);
+            });
+          }
+        );
+
+        const stationCalcs = Promise.all(stationCalculationsProm)
+          .then(stationsCalculations => {
+            const deletedCalcs = stationsCalculations.map(calculation => {
+              if (!calculation) {
+                return res.status(404).send();
+              } else {
+                return calculation;
+              }
+            });
+
+            return deletedCalcs;
+          })
+          .catch(e => {
+            res.status(400).send();
+          });
+
+        res.send({ station });
+      } else {
+        res.send({ station });
+      }
     })
     .catch(e => {
-      res.status(400).send();
+      console.log(e);
     });
 });
 

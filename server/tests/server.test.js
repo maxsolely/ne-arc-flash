@@ -177,12 +177,12 @@ describe('GET /stations/:id', () => {
 
 describe('DELETE /stations/:id', () => {
   it('should delete a station with the requested id', done => {
-    var id = stations[1]._id.toHexString();
+    var id = stations[0]._id.toHexString();
     request(app)
       .delete(`/stations/${id}`)
       .expect(200)
       .expect(res => {
-        expect(res.body.station.name).toBe(stations[1].name);
+        expect(res.body.station.name).toBe(stations[0].name);
       })
       .end((err, res) => {
         if (err) {
