@@ -7,8 +7,9 @@ const calculate = require('./calculate1584');
 const { ObjectID } = require('mongodb');
 var { mongoose } = require('./db/mongoose');
 var { Station } = require('./models/station');
-//var { ArcCalc } = require('./models/arcCalc');
 var { ArcCalc1584 } = require('./models/arcCalc1584');
+var { User } = require('./models/user');
+var { authenticate } = require('./middleware/authenticate');
 
 var port = process.env.PORT;
 var app = express();
@@ -36,14 +37,64 @@ function createCleanObject(obj) {
 }
 
 // ********************************************************************************************
+// *************************************      USERS      **************************************
+// ********************************************************************************************
+
+app.post('/users', (req, res) => {
+  //get the email and password from the body
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+  user
+    .save()
+    .then(() => {
+      return user.generateAuthToken();
+    })
+    .then(token => {
+      res.header('x-auth', token).send(user);
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+});
+
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(body.email, body.password)
+    .then(user => {
+      return user.generateAuthToken().then(token => {
+        res.header('x-auth', token).send(user);
+      });
+    })
+    .catch(e => {
+      res.status(400).send();
+    });
+});
+
+app.delete('/users/me/token', authenticate, (req, res) => {
+  req.user
+    .removeToken(req.token)
+    .then(() => {
+      res.status(200).send();
+    })
+    .catch(e => {
+      res.status(400).send();
+    });
+});
+
+// ********************************************************************************************
 // ************************************      STATIONS      ************************************
 // ********************************************************************************************
 
-app.post('/stations', (req, res) => {
+app.post('/stations', authenticate, (req, res) => {
   var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationConfig']);
   Station.findOne({ name: body.name, voltage: body.voltage }).then(station => {
     if (!station) {
-      var newStation = new Station({ ...body });
+      var newStation = new Station({ ...body, _creator: req.user._id });
       newStation
         .save()
         .then(station => {

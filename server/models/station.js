@@ -33,7 +33,11 @@ var Station = mongoose.model('Station', {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'ArcCalc1584'
     }
-  ]
+  ],
+  _creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  }
 });
 
 module.exports = { Station };
