@@ -27,7 +27,7 @@ describe('POST /stations', () => {
 
   it('should add a new station', done => {
     request(app)
-      .post('/stations')
+      .post('/api/stations')
       .set('x-auth', users[0].tokens[0].token)
       .send({ name, division, voltage, stationConfig })
       .expect(200)
@@ -53,7 +53,7 @@ describe('POST /stations', () => {
 
   it('should add a station with the same name but different voltage', done => {
     request(app)
-      .post('/stations')
+      .post('/api/stations')
       .set('x-auth', users[0].tokens[0].token)
       .send({
         name: 'Test Station',
@@ -85,7 +85,7 @@ describe('POST /stations', () => {
 
   it('should not add a station with the same name and voltage', done => {
     request(app)
-      .post('/stations')
+      .post('/api/stations')
       .set('x-auth', users[0].tokens[0].token)
       .send({
         name: 'Test Station',
@@ -112,7 +112,7 @@ describe('POST /stations', () => {
 
   it('should not add a station with invalid body', done => {
     request(app)
-      .post('/stations')
+      .post('/api/stations')
       .set('x-auth', users[0].tokens[0].token)
       .send({ name, division: 'Invalid Division', voltage, stationConfig })
       .expect(400)
@@ -136,11 +136,12 @@ describe('POST /stations', () => {
 describe('GET /stations', () => {
   it('should return all stations in the database', done => {
     request(app)
-      .get('/stations')
+      .get('/api/stations')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .end((err, res) => {
         if (err) {
-          done(err);
+          return done(err);
         }
 
         Station.find()
@@ -159,7 +160,8 @@ describe('GET /stations/:id', () => {
   it('should return the station with the requested id', done => {
     var id = stations[0]._id.toHexString();
     request(app)
-      .get(`/stations/${id}`)
+      .get(`/api/stations/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect(res => {
         expect(res.body.station.name).toBe(stations[0].name);
@@ -170,14 +172,16 @@ describe('GET /stations/:id', () => {
   it('should return 404 if station not found', done => {
     var unkownId = new ObjectID().toHexString;
     request(app)
-      .get(`/stations/${unkownId}`)
+      .get(`/api/stations/${unkownId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
 
   it('should return 404 for non-object ids', done => {
     request(app)
-      .get(`/stations/123`)
+      .get(`/api/stations/123`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -187,7 +191,7 @@ describe('DELETE /stations/:id', () => {
   it('should delete a station with the requested id', done => {
     var id = stations[0]._id.toHexString();
     request(app)
-      .delete(`/stations/${id}`)
+      .delete(`/api/stations/${id}`)
       .expect(200)
       .expect(res => {
         expect(res.body.station.name).toBe(stations[0].name);
@@ -211,14 +215,14 @@ describe('DELETE /stations/:id', () => {
   it('should return 404 if station not found', done => {
     var unkownId = new ObjectID().toHexString;
     request(app)
-      .delete(`/stations/${unkownId}`)
+      .delete(`/api/stations/${unkownId}`)
       .expect(404)
       .end(done);
   });
 
   it('should return 404 for non-object ids', done => {
     request(app)
-      .delete('/stations/123')
+      .delete('/api/stations/123')
       .expect(404)
       .end(done);
   });
@@ -229,7 +233,7 @@ describe('PATCH /stations/:id', () => {
     var hexId = stations[0]._id.toHexString();
     var updatedName = 'Updated Station';
     request(app)
-      .patch(`/stations/${hexId}`)
+      .patch(`/api/stations/${hexId}`)
       .send({ name: updatedName })
       .expect(200)
       .expect(res => {
@@ -242,7 +246,7 @@ describe('PATCH /stations/:id', () => {
     var id = stations[0]._id;
     var updatedName = '        ';
     request(app)
-      .patch(`/stations/${id.toHexString()}`)
+      .patch(`/api/stations/${id.toHexString()}`)
       .send({ name: updatedName })
       .expect(400)
       .end((err, res) => {
@@ -265,7 +269,7 @@ describe('PATCH /stations/:id', () => {
     var id = stations[0]._id;
     var updatedDivision = 'Invalid';
     request(app)
-      .patch(`/stations/${id.toHexString()}`)
+      .patch(`/api/stations/${id.toHexString()}`)
       .send({ division: updatedDivision })
       .expect(400)
       .end((err, res) => {
@@ -288,7 +292,7 @@ describe('PATCH /stations/:id', () => {
     var id = stations[0]._id;
     var updatedStationConfig = 'Invalid';
     request(app)
-      .patch(`/stations/${id.toHexString()}`)
+      .patch(`/api/stations/${id.toHexString()}`)
       .send({ stationConfig: updatedStationConfig })
       .expect(400)
       .end((err, res) => {
@@ -312,7 +316,7 @@ describe('POST /arccalc1584', () => {
   it('should post an arc flash calculation', done => {
     var calcParams = arcCalc1584calculations[0].calcParams;
     request(app)
-      .post('/arccalc1584')
+      .post('/api/arccalc1584')
       .send({ calcParams })
       .expect(200)
       .end((err, res) => {
@@ -343,7 +347,7 @@ describe('POST /arccalc1584', () => {
       faultCurrent: 10042
     };
     request(app)
-      .post('/arccalc1584')
+      .post('/api/arccalc1584')
       .send({ calcParams })
       .expect(400)
       .end((err, res) => {
@@ -373,7 +377,7 @@ describe('POST /arccalc1584', () => {
       relayOpTime: 0.983
     };
     request(app)
-      .post('/arccalc1584')
+      .post('/api/arccalc1584')
       .send({ calcParams })
       .expect(404)
       .end(done);
@@ -383,7 +387,7 @@ describe('POST /arccalc1584', () => {
 describe('GET /arccalc1584', () => {
   it('should return all 1584 calculations in the database', done => {
     request(app)
-      .get('/arccalc1584')
+      .get('/api/arccalc1584')
       .expect(200)
       .end((err, res) => {
         if (err) {
@@ -406,7 +410,7 @@ describe('GET /arccalc1584/:id', () => {
   it('should return the 1584 calulation with the requested id', done => {
     var id = arcCalc1584calculations[0]._id.toHexString();
     request(app)
-      .get(`/arccalc1584/${id}`)
+      .get(`/api/arccalc1584/${id}`)
       .expect(200)
       .expect(res => {
         expect(res.body.calculation.calcParams.faultCurrent).toBe(
@@ -419,14 +423,14 @@ describe('GET /arccalc1584/:id', () => {
   it('should return 404 if 1584 calculation not found', done => {
     var unkownId = new ObjectID().toHexString;
     request(app)
-      .get(`/arccalc1584/${unkownId}`)
+      .get(`/api/arccalc1584/${unkownId}`)
       .expect(404)
       .end(done);
   });
 
   it('should return 404 for non-object ids', done => {
     request(app)
-      .get(`/arccalc1584/123`)
+      .get(`/api/arccalc1584/123`)
       .expect(404)
       .end(done);
   });
@@ -436,7 +440,7 @@ describe('DELETE /arccalc1584/:id', () => {
   it('should return the updated station without the calculation in stationCalcs upon successful deletion', done => {
     var id = arcCalc1584calculations[0]._id.toHexString();
     request(app)
-      .delete(`/arccalc1584/${id}`)
+      .delete(`/api/arccalc1584/${id}`)
       .expect(200)
       .expect(res => {
         expect(res.body.updatedStation.stationCalcs.length).toBe(1);
@@ -460,14 +464,14 @@ describe('DELETE /arccalc1584/:id', () => {
   it('should return 404 if 1584 calculation not found', done => {
     var unkownId = new ObjectID().toHexString;
     request(app)
-      .get(`/arccalc1584/${unkownId}`)
+      .get(`/api/arccalc1584/${unkownId}`)
       .expect(404)
       .end(done);
   });
 
   it('should return 404 for non-object ids', done => {
     request(app)
-      .get(`/arccalc1584/123`)
+      .get(`/api/arccalc1584/123`)
       .expect(404)
       .end(done);
   });
@@ -488,7 +492,7 @@ describe('DELETE /arccalc1584/:id', () => {
 describe('GET /users/me', () => {
   it('should return user if authenticated', done => {
     request(app)
-      .get('/users/me')
+      .get('/api/users/me')
       .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect(res => {
@@ -500,7 +504,7 @@ describe('GET /users/me', () => {
 
   it('should return 401 if user is not authenticated', done => {
     request(app)
-      .get('/users/me')
+      .get('/api/users/me')
       .expect(401)
       .expect(res => {
         expect(res.body).toEqual({});
@@ -515,7 +519,7 @@ describe('POST /users', () => {
     var password = '123nmb32!';
 
     request(app)
-      .post('/users')
+      .post('/api/users')
       .send({ email, password })
       .expect(200)
       .expect(res => {
@@ -543,7 +547,7 @@ describe('POST /users', () => {
     var password = 'shortpw';
 
     request(app)
-      .post('/users')
+      .post('/api/users')
       .send({ email, password })
       .expect(400)
       .end(done);
@@ -554,7 +558,7 @@ describe('POST /users', () => {
     var password = 'aLongerpw';
 
     request(app)
-      .post('/users')
+      .post('/api/users')
       .send({ email, password })
       .expect(400)
       .end(done);
@@ -564,7 +568,7 @@ describe('POST /users', () => {
 describe('POST /users/login', () => {
   it('should login user and return auth token', done => {
     request(app)
-      .post('/users/login')
+      .post('/api/users/login')
       .send({
         email: users[1].email,
         password: users[1].password
@@ -592,7 +596,7 @@ describe('POST /users/login', () => {
 
   it('should reject an invalid login', done => {
     request(app)
-      .post('/users/login')
+      .post('/api/users/login')
       .send({
         email: users[1].email,
         password: 'someWrongPassword'
@@ -619,7 +623,7 @@ describe('POST /users/login', () => {
 describe('DELETE /users/me/token', () => {
   it('should remove auth token on logout', done => {
     request(app)
-      .delete('/users/me/token')
+      .delete('/api/users/me/token')
       .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .end((err, res) => {

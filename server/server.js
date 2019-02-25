@@ -36,11 +36,14 @@ function createCleanObject(obj) {
   return clonedObject;
 }
 
+app.get('/api/current_user', (req, res) => {
+  res.send('hello from localhost 8000');
+});
 // ********************************************************************************************
 // *************************************      USERS      **************************************
 // ********************************************************************************************
 
-app.post('/users', (req, res) => {
+app.post('/api/users', (req, res) => {
   //get the email and password from the body
   var body = _.pick(req.body, ['email', 'password']);
   var user = new User(body);
@@ -57,11 +60,11 @@ app.post('/users', (req, res) => {
     });
 });
 
-app.get('/users/me', authenticate, (req, res) => {
+app.get('/api/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
 
-app.post('/users/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
 
   User.findByCredentials(body.email, body.password)
@@ -75,7 +78,7 @@ app.post('/users/login', (req, res) => {
     });
 });
 
-app.delete('/users/me/token', authenticate, (req, res) => {
+app.delete('/api/users/me/token', authenticate, (req, res) => {
   req.user
     .removeToken(req.token)
     .then(() => {
@@ -90,7 +93,7 @@ app.delete('/users/me/token', authenticate, (req, res) => {
 // ************************************      STATIONS      ************************************
 // ********************************************************************************************
 
-app.post('/stations', authenticate, (req, res) => {
+app.post('/api/stations', authenticate, (req, res) => {
   var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationConfig']);
   Station.findOne({ name: body.name, voltage: body.voltage }).then(station => {
     if (!station) {
@@ -113,7 +116,7 @@ app.post('/stations', authenticate, (req, res) => {
   });
 });
 
-app.get('/stations', (req, res) => {
+app.get('/api/stations', authenticate, (req, res) => {
   Station.find()
     .then(stations => {
       res.send({ stations });
@@ -123,7 +126,7 @@ app.get('/stations', (req, res) => {
     });
 });
 
-app.get('/stations/:id', (req, res) => {
+app.get('/api/stations/:id', authenticate, (req, res) => {
   var id = req.params.id;
   //If ID is not valid
   if (!ObjectID.isValid(id)) {
@@ -142,7 +145,7 @@ app.get('/stations/:id', (req, res) => {
     });
 });
 
-app.delete('/stations/:id', (req, res) => {
+app.delete('/api/stations/:id', (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
@@ -195,7 +198,7 @@ app.delete('/stations/:id', (req, res) => {
     });
 });
 
-app.patch('/stations/:id', (req, res) => {
+app.patch('/api/stations/:id', (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
@@ -248,7 +251,7 @@ app.patch('/stations/:id', (req, res) => {
 // ********************************      1584 ARC CALCS       *********************************
 // ********************************************************************************************
 
-app.post('/arccalc1584', (req, res) => {
+app.post('/api/arccalc1584', (req, res) => {
   var bodyCalcParams = _.pick(req.body.calcParams, [
     'sub',
     'division',
@@ -300,7 +303,7 @@ app.post('/arccalc1584', (req, res) => {
   }
 });
 
-app.get('/arccalc1584', (req, res) => {
+app.get('/api/arccalc1584', (req, res) => {
   ArcCalc1584.find()
     .then(calculations => {
       res.send({ calculations });
@@ -310,7 +313,7 @@ app.get('/arccalc1584', (req, res) => {
     });
 });
 
-app.get('/arccalc1584/:id', (req, res) => {
+app.get('/api/arccalc1584/:id', (req, res) => {
   var id = req.params.id;
   //If ID is not valid
   if (!ObjectID.isValid(id)) {
@@ -329,7 +332,7 @@ app.get('/arccalc1584/:id', (req, res) => {
     });
 });
 
-app.delete('/arccalc1584/:id', (req, res) => {
+app.delete('/api/arccalc1584/:id', (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {

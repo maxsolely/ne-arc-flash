@@ -1,11 +1,11 @@
 {
   "test": {
-    "PORT": 3000,
+    "PORT": 8000,
     "MONGODB_URI": "mongodb://localhost:27017/NEArcFlashTest",
     "JWT_SECRET": "sdjndsli4389h9p34tuw"
   },
   "development": {
-    "PORT": 3000,
+    "PORT": 8000,
     "MONGODB_URI": "mongodb://localhost:27017/NEArcFlash",
     "JWT_SECRET": "rnl7zimkm34ioj4ojefawf"
   }

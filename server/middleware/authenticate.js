@@ -13,7 +13,8 @@ var authenticate = (req, res, next) => {
       next();
     })
     .catch(e => {
-      res.status(401).send();
+      res.send('').status(401);
+      // res.status(401).send('you need to login');
     });
 };
 
