@@ -7,6 +7,7 @@
   "development": {
     "PORT": 8000,
     "MONGODB_URI": "mongodb://localhost:27017/NEArcFlash",
-    "JWT_SECRET": "rnl7zimkm34ioj4ojefawf"
+    "JWT_SECRET": "rnl7zimkm34ioj4ojefawf",
+    "redirect_uri": "http://localhost:3000"
   }
 }

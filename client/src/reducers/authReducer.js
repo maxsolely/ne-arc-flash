@@ -7,12 +7,11 @@ const INITIAL_STATE = {
 };
 
 export default function(state = INITIAL_STATE, action) {
-  console.log(action);
   switch (action.type) {
     case FETCH_USER:
       return {
         ...state,
-        email: action.payload.email,
+        email: action.payload.email || false,
         _id: action.payload._id || false
       };
     case LOGIN_USER: {

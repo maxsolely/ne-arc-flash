@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_USER, LOGIN_USER } from './types';
+import { FETCH_USER, LOGIN_USER, FETCH_STATIONS } from './types';
 
 // export const fetchUser = () => {
 //   return function(dispatch) {
@@ -14,14 +14,17 @@ import { FETCH_USER, LOGIN_USER } from './types';
 //   };
 // };
 
-export const fetchUser = () => async dispatch => {
-  const res = await axios.get('/api/users/me', {
-    headers: {
-      'x-auth':
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YzZlYzAwNGE3OGEzMWNhYzc2NmFlMDkiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTUxMTE5NzQyfQ.Y3GtfoISe3BCOP51OKZDLnueiJCxHABz2mpZvtQXg4'
-    }
-  });
-  dispatch({ type: FETCH_USER, payload: res.data });
+export const fetchUser = xauth => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: FETCH_USER, payload: { email: '', password: '' } });
+  } else {
+    const res = await axios.get('/api/users/me', {
+      headers: {
+        'x-auth': xauth
+      }
+    });
+    dispatch({ type: FETCH_USER, payload: res.data });
+  }
 };
 
 export const loginUser = (email, password) => async dispatch => {
@@ -33,4 +36,18 @@ export const loginUser = (email, password) => async dispatch => {
     type: LOGIN_USER,
     payload: { xauth: res.headers['x-auth'], userData: res.data }
   });
+};
+
+export const fetchStations = xauth => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: FETCH_STATIONS, payload: [] });
+  } else {
+    const res = await axios.get('/api/stations', {
+      headers: {
+        'x-auth': xauth
+      }
+    });
+
+    dispatch({ type: FETCH_STATIONS, payload: res.data.stations });
+  }
 };
