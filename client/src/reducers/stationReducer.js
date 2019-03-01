@@ -1,4 +1,4 @@
-import { FETCH_STATIONS } from '../actions/types';
+import { FETCH_STATIONS, ADD_STATION } from '../actions/types';
 
 export default function(state = [], action) {
   console.log(action.type);
@@ -9,6 +9,9 @@ export default function(state = [], action) {
 
     case FETCH_STATIONS:
       return action.payload;
+
+    case ADD_STATION:
+      return state;
     // case FETCH_STATIONS: {
     //   if (state.length === 0) {
     //     return [...state].concat(action.payload);

@@ -20,6 +20,9 @@ class Header extends Component {
               <Link to="/stations">Stations</Link>
             </li>
             <li>
+              <Link to="/addStation">Add Station</Link>
+            </li>
+            <li>
               <Link to="/calculations">Calculations</Link>
             </li>
             <li>

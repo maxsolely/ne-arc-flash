@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_USER, LOGIN_USER, FETCH_STATIONS } from './types';
+import { FETCH_USER, LOGIN_USER, FETCH_STATIONS, ADD_STATION } from './types';
 
 // export const fetchUser = () => {
 //   return function(dispatch) {
@@ -49,5 +49,18 @@ export const fetchStations = xauth => async dispatch => {
     });
 
     dispatch({ type: FETCH_STATIONS, payload: res.data.stations });
+  }
+};
+
+export const addStation = (xauth, body) => async dispatch => {
+  // const { stationName, division, voltage, stationConfig } = body;
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: ADD_STATION, payload: {} });
+  } else {
+    const res = await axios.post('/api/stations', body, {
+      headers: { 'x-auth': xauth }
+    });
+
+    dispatch({ type: ADD_STATION, payload: res });
   }
 };
