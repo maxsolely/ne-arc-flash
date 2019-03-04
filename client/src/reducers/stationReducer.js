@@ -1,6 +1,12 @@
-import { FETCH_STATIONS, ADD_STATION } from '../actions/types';
+import {
+  FETCH_STATIONS,
+  ADD_STATION,
+  FETCH_STATION_INFO
+} from '../actions/types';
 
-export default function(state = [], action) {
+const initialState = { stationsArray: [], currentStation: null };
+
+export default function(state = initialState, action) {
   console.log(action.type);
   console.log(action.payload);
   switch (action.type) {
@@ -8,10 +14,13 @@ export default function(state = [], action) {
       return state;
 
     case FETCH_STATIONS:
-      return action.payload;
+      return { ...state, stationsArray: action.payload };
 
     case ADD_STATION:
       return state;
+
+    case FETCH_STATION_INFO:
+      return { ...state, currentStation: action.payload };
     // case FETCH_STATIONS: {
     //   if (state.length === 0) {
     //     return [...state].concat(action.payload);

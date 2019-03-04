@@ -313,7 +313,7 @@ app.get('/api/arccalc1584', (req, res) => {
     });
 });
 
-app.get('/api/arccalc1584/:id', (req, res) => {
+app.get('/api/arccalc1584/:id', authenticate, (req, res) => {
   var id = req.params.id;
   //If ID is not valid
   if (!ObjectID.isValid(id)) {

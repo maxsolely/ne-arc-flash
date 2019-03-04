@@ -10,7 +10,7 @@ class Stations extends Component {
 
   render() {
     return (
-      <div class="container">
+      <div>
         <div
           class="row amber darken-4"
           style={{ borderBottom: '2px solid black', textAlign: 'center' }}
@@ -21,10 +21,10 @@ class Stations extends Component {
           <div class="col s3">
             <span class="flow-text">Division:</span>
           </div>
-          <div class="col s3">
+          <div class="col s2">
             <span class="flow-text">Voltage (kV):</span>
           </div>
-          <div class="col s3">
+          <div class="col s2">
             <span class="flow-text">Number of Calcs:</span>
           </div>
         </div>
@@ -36,6 +36,7 @@ class Stations extends Component {
               division={e.division}
               voltage={e.voltage}
               calcs={e.stationCalcs.length}
+              stationID={e._id}
             />
           );
         })}
@@ -45,7 +46,7 @@ class Stations extends Component {
 }
 
 function mapStateToProps(state) {
-  return { auth: state.auth, stations: state.stations };
+  return { auth: state.auth, stations: state.stations.stationsArray };
 }
 export default connect(
   mapStateToProps,

@@ -6,6 +6,7 @@ import Header from './Header';
 import LoginForm from './LoginForm';
 import Stations from './Stations';
 import NewStationForm from './NewStationForm';
+import StationProfile from './StationProfile';
 
 const CalcNew = () => <h2>CalcNew</h2>;
 const Landing = () => <h2>Landing</h2>;
@@ -28,6 +29,7 @@ class App extends Component {
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/stations" component={Stations} />
             <Route path="/addStation" component={NewStationForm} />
+            <Route path="/stationProfile" component={StationProfile} />
             <Route path="/calcs/new" component={CalcNew} />
           </div>
         </BrowserRouter>
