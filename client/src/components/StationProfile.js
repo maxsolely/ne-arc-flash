@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { StationEntry } from './common';
+import { CalculationEntry } from './common';
 import * as actions from '../actions';
 
 class StationProfile extends Component {
@@ -62,7 +62,16 @@ class StationProfile extends Component {
               <h4 class="col s6">{voltage || this.props.stationInfo}</h4>
               <Link
                 class="col s2 offset-s4 waves-effect waves-light btn-large"
-                to="/"
+                to={{
+                  pathname: '/add1584Calculation',
+                  state: {
+                    _id: this.state.stationID,
+                    name,
+                    voltage,
+                    stationConfig,
+                    division
+                  }
+                }}
               >
                 New Calc
               </Link>
@@ -80,12 +89,12 @@ class StationProfile extends Component {
             ) : (
               stationCalcs.map(e => {
                 return (
-                  <StationEntry
-                    name={e.calcParams.faultType}
-                    division={e.results.arcCurrent}
-                    voltage={e.results.incidentEnergy}
-                    calcs={e.results.hrcLevel}
-                    stationID={e._id}
+                  <CalculationEntry
+                    faultType={e.calcParams.faultType}
+                    incidentEnergy={e.results.incidentEnergy}
+                    eightCal={e.results.eightCalBoundary}
+                    hrcLevel={e.results.hrcLevel}
+                    calcID={e._id}
                   />
                 );
               })
