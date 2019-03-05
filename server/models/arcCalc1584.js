@@ -31,6 +31,11 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
       trim: true,
       required: true
     },
+    sub2: {
+      type: String,
+      trim: true,
+      required: true
+    },
     division: {
       type: String,
       trim: true,

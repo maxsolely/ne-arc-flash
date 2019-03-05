@@ -317,6 +317,7 @@ describe('POST /arccalc1584', () => {
     var calcParams = arcCalc1584calculations[0].calcParams;
     request(app)
       .post('/api/arccalc1584')
+      .set('x-auth', users[0].tokens[0].token)
       .send({ calcParams })
       .expect(200)
       .end((err, res) => {
@@ -339,6 +340,7 @@ describe('POST /arccalc1584', () => {
     // missing relayOpTime
     var calcParams = {
       sub: 'Test Station',
+      sub2: 'Dummy Station',
       division: 'Bay State West',
       faultType: '3 phase',
       stationConfig: 'Metalclad',
@@ -348,6 +350,7 @@ describe('POST /arccalc1584', () => {
     };
     request(app)
       .post('/api/arccalc1584')
+      .set('x-auth', users[0].tokens[0].token)
       .send({ calcParams })
       .expect(400)
       .end((err, res) => {
@@ -368,6 +371,7 @@ describe('POST /arccalc1584', () => {
   it('should return 404 if there is no associated substation in the database', done => {
     var calcParams = {
       sub: 'Test Station',
+      sub2: 'Dummy Station',
       division: 'Bay State West',
       faultType: '3 phase',
       stationConfig: 'Metalclad',
@@ -378,6 +382,7 @@ describe('POST /arccalc1584', () => {
     };
     request(app)
       .post('/api/arccalc1584')
+      .set('x-auth', users[0].tokens[0].token)
       .send({ calcParams })
       .expect(404)
       .end(done);
@@ -388,6 +393,7 @@ describe('GET /arccalc1584', () => {
   it('should return all 1584 calculations in the database', done => {
     request(app)
       .get('/api/arccalc1584')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .end((err, res) => {
         if (err) {
@@ -411,6 +417,7 @@ describe('GET /arccalc1584/:id', () => {
     var id = arcCalc1584calculations[0]._id.toHexString();
     request(app)
       .get(`/api/arccalc1584/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect(res => {
         expect(res.body.calculation.calcParams.faultCurrent).toBe(
@@ -424,6 +431,7 @@ describe('GET /arccalc1584/:id', () => {
     var unkownId = new ObjectID().toHexString;
     request(app)
       .get(`/api/arccalc1584/${unkownId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -431,6 +439,7 @@ describe('GET /arccalc1584/:id', () => {
   it('should return 404 for non-object ids', done => {
     request(app)
       .get(`/api/arccalc1584/123`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });

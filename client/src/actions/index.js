@@ -4,7 +4,8 @@ import {
   LOGIN_USER,
   FETCH_STATIONS,
   ADD_STATION,
-  FETCH_STATION_INFO
+  FETCH_STATION_INFO,
+  ADD_1584_CALC
 } from './types';
 
 // export const fetchUser = () => {
@@ -73,7 +74,7 @@ export const addStation = (xauth, body) => async dispatch => {
 
 export const fetchStationInfo = (xauth, id) => async dispatch => {
   if (xauth === null || xauth.length === 0) {
-    dispatch({ type: ADD_STATION, payload: {} });
+    dispatch({ type: FETCH_STATION_INFO, payload: {} });
   } else {
     const res = await axios.get(`/api/stations/${id}`, {
       headers: {
@@ -93,5 +94,28 @@ export const fetchStationInfo = (xauth, id) => async dispatch => {
 
     res.data.station.stationCalcs = retrievedCalculations;
     dispatch({ type: FETCH_STATION_INFO, payload: res.data.station });
+  }
+};
+
+export const add1584Calc = (xauth, body) => async dispatch => {
+  //for some reason, faultCurrent and relayOpTime are getting converted to a string when they are getting passed into this action creator. They both need to be a Number.
+  let updatedBody = { ...body };
+  console.log(updatedBody);
+  updatedBody.faultCurrent = parseFloat(updatedBody.faultCurrent);
+  updatedBody.relayOpTime = parseFloat(updatedBody.relayOpTime);
+
+  console.log('body from action creator', updatedBody);
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: ADD_1584_CALC, payload: {} });
+  } else {
+    const res = await axios.post(
+      '/api/arccalc1584',
+      { calcParams: updatedBody },
+      {
+        headers: { 'x-auth': xauth }
+      }
+    );
+
+    dispatch({ type: ADD_1584_CALC, payload: res.data });
   }
 };

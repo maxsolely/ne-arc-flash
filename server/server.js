@@ -251,9 +251,10 @@ app.patch('/api/stations/:id', (req, res) => {
 // ********************************      1584 ARC CALCS       *********************************
 // ********************************************************************************************
 
-app.post('/api/arccalc1584', (req, res) => {
+app.post('/api/arccalc1584', authenticate, (req, res) => {
   var bodyCalcParams = _.pick(req.body.calcParams, [
     'sub',
+    'sub2',
     'division',
     'faultType',
     'stationConfig',
@@ -303,7 +304,7 @@ app.post('/api/arccalc1584', (req, res) => {
   }
 });
 
-app.get('/api/arccalc1584', (req, res) => {
+app.get('/api/arccalc1584', authenticate, (req, res) => {
   ArcCalc1584.find()
     .then(calculations => {
       res.send({ calculations });

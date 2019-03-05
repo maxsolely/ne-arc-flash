@@ -43,7 +43,7 @@ class StationProfile extends Component {
                 marginBottom: '0px'
               }}
             >
-              <h1 class="col s6">{name || this.props.stationInfo}</h1>
+              <h1 class="col s6">{name || ' still rendering'}</h1>
               <Link
                 class="col s2 offset-s4 waves-effect waves-light btn-large"
                 to="/"
@@ -59,7 +59,7 @@ class StationProfile extends Component {
                 marginBottom: '0px'
               }}
             >
-              <h4 class="col s6">{voltage || this.props.stationInfo}</h4>
+              <h4 class="col s6">{voltage || 'still rendering'}</h4>
               <Link
                 class="col s2 offset-s4 waves-effect waves-light btn-large"
                 to={{
@@ -77,10 +77,10 @@ class StationProfile extends Component {
               </Link>
             </div>
             <div class="row">
-              <p class="col s6">{division || this.props.stationInfo}</p>
+              <p class="col s6">{division || 'still rendering'}</p>
             </div>
             <div class="row">
-              <p class="col s6">{stationConfig || this.props.stationInfo}</p>
+              <p class="col s6">{stationConfig || 'still rendering'}</p>
             </div>
             {stationCalcs === undefined || stationCalcs.length === 0 ? (
               <p class="col s6">
@@ -106,6 +106,7 @@ class StationProfile extends Component {
   }
 
   render() {
+    // return <div />;
     return <div>{this.renderContent()}</div>;
   }
 }

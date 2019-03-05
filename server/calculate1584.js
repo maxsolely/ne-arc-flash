@@ -38,6 +38,8 @@ var calculate1584Results = calcParams => {
 
   var arcCurrent = Math.exp(arcCurrentExpPower);
 
+  arcCurrent = arcCurrent.toFixed(2);
+
   var incidentEnergyExpPower =
     (k1 + k2 + 0.0011 * arcGapmm) * Math.log(10) + 1.081 * Math.log(arcCurrent);
 
@@ -45,6 +47,8 @@ var calculate1584Results = calcParams => {
     Math.exp(incidentEnergyExpPower) *
     (totalClearingTime / 0.2) *
     (Math.pow(610, distanceFactor) / Math.pow(workDistancemm, distanceFactor));
+
+  incidentEnergy = incidentEnergy.toFixed(2);
 
   var eightCalBoundary =
     Math.pow(
@@ -54,6 +58,8 @@ var calculate1584Results = calcParams => {
         (Math.pow(610, distanceFactor) / (8 * 4.184)),
       1 / distanceFactor
     ) / 25.4;
+
+  eightCalBoundary = eightCalBoundary.toFixed(2);
 
   if (incidentEnergy <= 4) {
     hrcLevel = '1';

@@ -6,17 +6,20 @@ class New1584Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      calcParams: {
+        sub: this.props.location.state.name,
+        sub2: '',
+        division: this.props.location.state.division,
+        faultType: '3 phase',
+        stationConfig: this.props.location.state.stationConfig,
+        grounded: false,
+        lineVoltage: this.props.location.state.voltage,
+        faultCurrent: Number,
+        relayOpTime: Number,
+        comment: ''
+      },
       stationID: this.props.location.state._id,
-      division: this.props.location.state.division,
-      faultType: '3 phase',
-      substation1: this.props.location.state.name,
-      voltage: this.props.location.state.voltage,
-      stationConfig: this.props.location.state.stationConfig,
-      substation2: '',
-      grounded: false,
-      faultCurrent: null,
-      relayOpTime: null,
-      comment: ''
+      showModal: false
     };
 
     this.handleSub2NameChange = this.handleSub2NameChange.bind(this);
@@ -28,33 +31,44 @@ class New1584Form extends Component {
   }
 
   handleSub2NameChange(event) {
-    console.log(this.state.substation2);
-    this.setState({ substation2: event.target.value });
+    const { calcParams } = this.state;
+    calcParams.sub2 = event.target.value;
+    console.log(this.state.calcParams.sub2);
+    this.setState({ calcParams });
   }
 
   handleGroundedChange() {
-    console.log(this.state.grounded);
-    this.setState({ grounded: !this.state.grounded });
+    const { calcParams } = this.state;
+    calcParams.grounded = !calcParams.grounded;
+    console.log(this.state.calcParams.grounded);
+    this.setState({ calcParams });
   }
 
   handleFaultCurrentChange(event) {
-    console.log(this.state.faultCurrent);
-    this.setState({ faultCurrent: event.target.value });
+    const { calcParams } = this.state;
+    calcParams.faultCurrent = event.target.value;
+    console.log(this.state.calcParams.faultCurrent);
+    this.setState({ calcParams });
   }
 
   handleRelayOpTimeChange(event) {
-    console.log(this.state.relayOpTime);
-    this.setState({ relayOpTime: event.target.value });
+    const { calcParams } = this.state;
+    calcParams.relayOpTime = event.target.value;
+    console.log(this.state.calcParams.relayOpTime);
+    this.setState({ calcParams });
   }
 
   handleCommentChange(event) {
-    console.log(this.state.comment);
-    this.setState({ comment: event.target.value });
+    const { calcParams } = this.state;
+    calcParams.comment = event.target.value;
+    console.log(this.state.calcParams.comment);
+    this.setState({ calcParams });
   }
 
   handleSubmit(event) {
     event.preventDefault();
     console.log(this.state);
+    this.props.add1584Calc(this.props.auth.xauth, this.state.calcParams);
     // this.props.addStation(this.props.auth.xauth, this.state);
     // this.setState({ name: '', division: '', voltage: '', stationConfig: '' });
   }
@@ -74,21 +88,23 @@ class New1584Form extends Component {
               <div class="input-field col s12">
                 <input
                   disabled
-                  id="substation1"
+                  id="sub"
                   type="text"
                   class="validate"
-                  value={this.state.substation1}
+                  required
+                  value={this.state.calcParams.sub}
                 />
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <input
-                  id="substation2"
+                  id="sub2"
                   placeholder="Substation 2"
                   type="text"
                   class="validate"
-                  value={this.state.substation2}
+                  required
+                  value={this.state.calcParams.sub2}
                   onChange={this.handleSub2NameChange}
                 />
               </div>
@@ -100,7 +116,8 @@ class New1584Form extends Component {
                   id="faultType"
                   type="text"
                   class="validate"
-                  value={this.state.faultType}
+                  required
+                  value={this.state.calcParams.faultType}
                 />
               </div>
             </div>
@@ -111,7 +128,8 @@ class New1584Form extends Component {
                   id="voltage"
                   type="text"
                   class="validate"
-                  value={this.state.voltage}
+                  required
+                  value={this.state.calcParams.lineVoltage}
                 />
               </div>
             </div>
@@ -122,7 +140,8 @@ class New1584Form extends Component {
                   id="stationConfig"
                   type="text"
                   class="validate"
-                  value={this.state.stationConfig}
+                  required
+                  value={this.state.calcParams.stationConfig}
                 />
               </div>
             </div>
@@ -142,7 +161,8 @@ class New1584Form extends Component {
                   type="number"
                   min="0"
                   class="validate"
-                  value={this.state.faultCurrent}
+                  required
+                  value={this.state.calcParams.faultCurrent}
                   onChange={this.handleFaultCurrentChange}
                 />
               </div>
@@ -154,8 +174,10 @@ class New1584Form extends Component {
                   placeholder="Relay Op Time (seconds)"
                   type="number"
                   min="0"
+                  step="0.001"
                   class="validate"
-                  value={this.state.relayOpTime}
+                  required
+                  value={this.state.calcParams.relayOpTime}
                   onChange={this.handleRelayOpTimeChange}
                 />
               </div>
@@ -166,7 +188,7 @@ class New1584Form extends Component {
                   id="comment"
                   class="materialize-textarea"
                   placeholder="Add Comments Here"
-                  value={this.state.comment}
+                  value={this.state.calcParams.comment}
                   onChange={this.handleCommentChange}
                 />
               </div>
@@ -187,7 +209,7 @@ class New1584Form extends Component {
 }
 
 function mapStateToProps(state) {
-  return { auth: state.auth };
+  return { auth: state.auth, results1584: state.calculation1584 };
 }
 
 export default connect(

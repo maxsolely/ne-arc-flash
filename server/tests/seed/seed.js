@@ -13,6 +13,7 @@ const arcCalc1584calculations = [
     _id: new ObjectID(),
     calcParams: {
       sub: 'Test Station',
+      sub2: 'Dummy Station',
       division: 'Bay State West',
       faultType: '3 phase',
       stationConfig: 'Metalclad',
@@ -33,6 +34,7 @@ const arcCalc1584calculations = [
     _id: new ObjectID(),
     calcParams: {
       sub: 'Test Station',
+      sub2: 'Dummy Station',
       division: 'Bay State West',
       faultType: '3 phase',
       stationConfig: 'Metalclad',
