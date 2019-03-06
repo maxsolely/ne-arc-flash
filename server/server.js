@@ -333,7 +333,7 @@ app.get('/api/arccalc1584/:id', authenticate, (req, res) => {
     });
 });
 
-app.delete('/api/arccalc1584/:id', (req, res) => {
+app.delete('/api/arccalc1584/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {

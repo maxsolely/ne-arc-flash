@@ -5,7 +5,8 @@ import {
   FETCH_STATIONS,
   ADD_STATION,
   FETCH_STATION_INFO,
-  ADD_1584_CALC
+  ADD_1584_CALC,
+  DELETE_1584_CALC
 } from './types';
 
 // export const fetchUser = () => {
@@ -117,5 +118,17 @@ export const add1584Calc = (xauth, body) => async dispatch => {
     );
 
     dispatch({ type: ADD_1584_CALC, payload: res.data });
+  }
+};
+
+export const delete1584Calc = (xauth, calcID) => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: DELETE_1584_CALC, payload: {} });
+  } else {
+    const res = await axios.delete(`/api/arccalc1584/${calcID}`, {
+      headers: { 'x-auth': xauth }
+    });
+
+    dispatch({ type: DELETE_1584_CALC, payload: res.data });
   }
 };

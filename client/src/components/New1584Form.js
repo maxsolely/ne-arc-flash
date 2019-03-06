@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Modal } from './common';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
@@ -22,12 +23,26 @@ class New1584Form extends Component {
       showModal: false
     };
 
+    this.showModalFunction = this.showModalFunction.bind(this);
     this.handleSub2NameChange = this.handleSub2NameChange.bind(this);
     this.handleGroundedChange = this.handleGroundedChange.bind(this);
     this.handleFaultCurrentChange = this.handleFaultCurrentChange.bind(this);
     this.handleRelayOpTimeChange = this.handleRelayOpTimeChange.bind(this);
     this.handleCommentChange = this.handleCommentChange.bind(this);
+    this.deleteCalculation = this.deleteCalculation.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  showModalFunction() {
+    console.log('show modal triggered');
+    console.log(this.state.showModal);
+    this.setState({ showModal: !this.state.showModal });
+  }
+
+  deleteCalculation() {
+    console.log('triggering delete 1584calc');
+    this.props.delete1584Calc(this.props.auth.xauth, this.props.calcID);
+    this.setState({ showModal: !this.state.showModal });
   }
 
   handleSub2NameChange(event) {
@@ -69,8 +84,32 @@ class New1584Form extends Component {
     event.preventDefault();
     console.log(this.state);
     this.props.add1584Calc(this.props.auth.xauth, this.state.calcParams);
+    this.setState({ showModal: !this.state.showModal });
     // this.props.addStation(this.props.auth.xauth, this.state);
     // this.setState({ name: '', division: '', voltage: '', stationConfig: '' });
+  }
+
+  renderModal() {
+    if (!this.state.showModal) {
+      return null;
+    } else {
+      const { arcCurrent, eightCalBoundary, hrcLevel } = this.props.calcResults;
+      return (
+        <Modal
+          modalTitle="Calculation Results"
+          onCancel={this.deleteCalculation}
+          onCancelButtonText="Discard Calculation"
+          onConfirm={this.showModalFunction}
+          onConfirmButtonText="Save Calculation"
+        >
+          <div class="row">Arc Current: {arcCurrent || 'still rendering'}</div>
+          <div class="row">
+            8 cal boundary: {eightCalBoundary || 'clearly did not work'}
+          </div>
+          <div class="row">HRC level: {hrcLevel || 'im an idiot'}</div>
+        </Modal>
+      );
+    }
   }
 
   renderContent() {
@@ -204,12 +243,21 @@ class New1584Form extends Component {
   }
 
   render() {
-    return <div class="row">{this.renderContent()}</div>;
+    return (
+      <div class="row">
+        {this.renderContent()}
+        {this.renderModal()}
+      </div>
+    );
   }
 }
 
 function mapStateToProps(state) {
-  return { auth: state.auth, results1584: state.calculation1584 };
+  return {
+    auth: state.auth,
+    calcResults: state.calculation1584.results || 'Still being calculated',
+    calcID: state.calculation1584._id || 'Still being calculated'
+  };
 }
 
 export default connect(
