@@ -6,7 +6,8 @@ const CalculationEntry = ({
   incidentEnergy,
   eightCal,
   hrcLevel,
-  calcID
+  calcID,
+  wholeCalcObject
 }) => {
   return (
     <div class="row" style={{ textAlign: 'center' }}>
@@ -26,7 +27,13 @@ const CalculationEntry = ({
         <span class="flow-text">{hrcLevel}</span>
       </div>
       <div class="col s2">
-        <Link to={{ pathname: '/' }} class="waves-effect waves-light btn-small">
+        <Link
+          to={{
+            pathname: '/calculationDetails',
+            state: { calculation: wholeCalcObject }
+          }}
+          class="waves-effect waves-light btn-small"
+        >
           View
         </Link>
       </div>

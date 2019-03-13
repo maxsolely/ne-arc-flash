@@ -8,6 +8,7 @@ import Stations from './Stations';
 import NewStationForm from './NewStationForm';
 import New1584Form from './New1584Form';
 import StationProfile from './StationProfile';
+import CalculationDetails from './CalculationDetails';
 
 const Landing = () => <h2>Landing</h2>;
 const Dashboard = () => <h2>Dashboard</h2>;
@@ -30,6 +31,7 @@ class App extends Component {
             <Route path="/stations" component={Stations} />
             <Route path="/addStation" component={NewStationForm} />
             <Route path="/stationProfile" component={StationProfile} />
+            <Route path="/calculationDetails" component={CalculationDetails} />
             <Route path="/add1584Calculation" component={New1584Form} />
           </div>
         </BrowserRouter>

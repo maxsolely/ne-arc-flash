@@ -5,6 +5,7 @@ import {
   FETCH_STATIONS,
   ADD_STATION,
   FETCH_STATION_INFO,
+  FETCH_1584_CALCULATION_INFO,
   ADD_1584_CALC,
   DELETE_1584_CALC
 } from './types';
@@ -95,6 +96,23 @@ export const fetchStationInfo = (xauth, id) => async dispatch => {
 
     res.data.station.stationCalcs = retrievedCalculations;
     dispatch({ type: FETCH_STATION_INFO, payload: res.data.station });
+  }
+};
+
+export const fetch1584CalculationInfo = (xauth, id) => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: FETCH_1584_CALCULATION_INFO, payload: {} });
+  } else {
+    const res = await axios.get(`/api/arccalc1584/${id}`, {
+      headers: {
+        'x-auth': xauth
+      }
+    });
+
+    dispatch({
+      type: FETCH_1584_CALCULATION_INFO,
+      payload: res.data.calculation
+    });
   }
 };
 

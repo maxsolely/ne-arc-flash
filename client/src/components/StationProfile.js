@@ -95,6 +95,7 @@ class StationProfile extends Component {
                     eightCal={e.results.calculatedArcFlashEnergy}
                     hrcLevel={e.results.hrcLevel}
                     calcID={e._id}
+                    wholeCalcObject={e}
                   />
                 );
               })
