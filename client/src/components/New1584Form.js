@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Modal } from './common';
+import { Modal, LoginCard } from './common';
 import { connect } from 'react-redux';
+// import { Redirect } from 'react-router-dom';
 import * as actions from '../actions';
 
 class New1584Form extends Component {
@@ -13,24 +14,29 @@ class New1584Form extends Component {
         division: this.props.location.state.division,
         faultType: '3 phase',
         stationConfig: this.props.location.state.stationConfig,
-        grounded: false,
+        electrodeConfig: '',
         lineVoltage: this.props.location.state.voltage,
-        faultCurrent: Number,
-        relayOpTime: Number,
+        boltedFaultCurrent: Number,
+        totalClearingTime: Number,
         comment: ''
+      },
+      results: {
+        incidentEnergy: Number,
+        calculatedArcFlashEnergy: Number
       },
       stationID: this.props.location.state._id,
       showModal: false
     };
 
-    this.showModalFunction = this.showModalFunction.bind(this);
-    this.handleSub2NameChange = this.handleSub2NameChange.bind(this);
-    this.handleGroundedChange = this.handleGroundedChange.bind(this);
-    this.handleFaultCurrentChange = this.handleFaultCurrentChange.bind(this);
-    this.handleRelayOpTimeChange = this.handleRelayOpTimeChange.bind(this);
-    this.handleCommentChange = this.handleCommentChange.bind(this);
-    this.deleteCalculation = this.deleteCalculation.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    // this.showModalFunction = this.showModalFunction.bind(this);
+    // this.handleSub2NameChange = this.handleSub2NameChange.bind(this);
+    // this.handleFaultCurrentChange = this.handleFaultCurrentChange.bind(this);
+    //this.handleTotalClearingTimeChange = this.handleTotalClearingTimeChange.bind(
+    //  this
+    // );
+    // this.handleCommentChange = this.handleCommentChange.bind(this);
+    // this.deleteCalculation = this.deleteCalculation.bind(this);
+    // this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   showModalFunction() {
@@ -42,6 +48,10 @@ class New1584Form extends Component {
   deleteCalculation() {
     console.log('triggering delete 1584calc');
     this.props.delete1584Calc(this.props.auth.xauth, this.props.calcID);
+
+    // <Redirect
+    //       to={{ pathname: '/stationProfile', state: { _id: this.state.stationID } }}
+    //     />
     this.setState({ showModal: !this.state.showModal });
   }
 
@@ -52,25 +62,39 @@ class New1584Form extends Component {
     this.setState({ calcParams });
   }
 
-  handleGroundedChange() {
+  handleElectrodeConfigChange(event) {
     const { calcParams } = this.state;
-    calcParams.grounded = !calcParams.grounded;
-    console.log(this.state.calcParams.grounded);
+    calcParams.electrodeConfig = event.target.value;
+    console.log(this.state.calcParams.electrodeConfig);
     this.setState({ calcParams });
   }
 
-  handleFaultCurrentChange(event) {
+  handleBoltedFaultCurrentChange(event) {
     const { calcParams } = this.state;
-    calcParams.faultCurrent = event.target.value;
-    console.log(this.state.calcParams.faultCurrent);
+    calcParams.boltedFaultCurrent = event.target.value;
+    console.log(this.state.calcParams.boltedFaultCurrent);
     this.setState({ calcParams });
   }
 
-  handleRelayOpTimeChange(event) {
+  handleTotalClearingTimeChange(event) {
     const { calcParams } = this.state;
-    calcParams.relayOpTime = event.target.value;
-    console.log(this.state.calcParams.relayOpTime);
+    calcParams.totalClearingTime = event.target.value;
+    console.log(this.state.calcParams.totalClearingTime);
     this.setState({ calcParams });
+  }
+
+  handleIncidentEnergyChange(event) {
+    const { results } = this.state;
+    results.incidentEnergy = event.target.value;
+    console.log(this.state.results.incidentEnergy);
+    this.setState({ results });
+  }
+
+  handleArcFlashEnergyChange(event) {
+    const { results } = this.state;
+    results.calculatedArcFlashEnergy = event.target.value;
+    console.log(this.state.results.calculatedArcFlashEnergy);
+    this.setState({ results });
   }
 
   handleCommentChange(event) {
@@ -83,7 +107,10 @@ class New1584Form extends Component {
   handleSubmit(event) {
     event.preventDefault();
     console.log(this.state);
-    this.props.add1584Calc(this.props.auth.xauth, this.state.calcParams);
+    this.props.add1584Calc(this.props.auth.xauth, {
+      calcParams: this.state.calcParams,
+      results: this.state.results
+    });
     this.setState({ showModal: !this.state.showModal });
     // this.props.addStation(this.props.auth.xauth, this.state);
     // this.setState({ name: '', division: '', voltage: '', stationConfig: '' });
@@ -93,18 +120,25 @@ class New1584Form extends Component {
     if (!this.state.showModal) {
       return null;
     } else {
-      const { arcCurrent, eightCalBoundary, hrcLevel } = this.props.calcResults;
+      const {
+        incidentEnergy,
+        calculatedArcFlashEnergy,
+        hrcLevel
+      } = this.props.calcResults;
       return (
         <Modal
           modalTitle="Calculation Results"
-          onCancel={this.deleteCalculation}
+          onCancel={this.deleteCalculation.bind(this)}
           onCancelButtonText="Discard Calculation"
-          onConfirm={this.showModalFunction}
+          onConfirm={this.showModalFunction.bind(this)}
           onConfirmButtonText="Save Calculation"
         >
-          <div class="row">Arc Current: {arcCurrent || 'still rendering'}</div>
           <div class="row">
-            8 cal boundary: {eightCalBoundary || 'clearly did not work'}
+            Arc Current: {incidentEnergy || 'still rendering'}
+          </div>
+          <div class="row">
+            Arc Flash Energy:{' '}
+            {calculatedArcFlashEnergy || 'clearly did not work'}
           </div>
           <div class="row">HRC level: {hrcLevel || 'im an idiot'}</div>
         </Modal>
@@ -118,11 +152,11 @@ class New1584Form extends Component {
         return;
 
       case false:
-        return <h1>you need to be logged in</h1>;
+        return <LoginCard />;
 
       default:
         return (
-          <form class="col s12" onSubmit={this.handleSubmit}>
+          <form class="col s12" onSubmit={this.handleSubmit.bind(this)}>
             <div class="row">
               <div class="input-field col s12">
                 <input
@@ -144,7 +178,7 @@ class New1584Form extends Component {
                   class="validate"
                   required
                   value={this.state.calcParams.sub2}
-                  onChange={this.handleSub2NameChange}
+                  onChange={this.handleSub2NameChange.bind(this)}
                 />
               </div>
             </div>
@@ -184,40 +218,87 @@ class New1584Form extends Component {
                 />
               </div>
             </div>
-            <div class="switch">
+            <div class="row">
+              <div class="input-field col s6">
+                <select
+                  class="browser-default"
+                  onChange={this.handleElectrodeConfigChange.bind(this)}
+                >
+                  <option value="" disabled selected>
+                    Choose an Electrode Configuration
+                  </option>
+                  <option value="VCB ">VCB</option>
+                  <option value="VCBB">VCBB</option>
+                  <option value="HCB">HCB</option>
+                  <option value="VOA">VOA</option>
+                  <option value="HOA">HOA</option>
+                </select>
+              </div>
+            </div>
+            {/* <div class="switch">
               <label>
                 Ungrounded
                 <input type="checkbox" onClick={this.handleGroundedChange} />
                 <span class="lever" />
                 Grounded
               </label>
-            </div>
+            </div> */}
             <div class="row">
               <div class="input-field col s12">
                 <input
-                  id="faultCurrent"
-                  placeholder="Fault Current (Amps)"
+                  id="boltedFaultCurrent"
+                  placeholder="Bolted Fault Current (Amps)"
                   type="number"
                   min="0"
                   class="validate"
                   required
-                  value={this.state.calcParams.faultCurrent}
-                  onChange={this.handleFaultCurrentChange}
+                  value={this.state.calcParams.boltedFaultCurrent}
+                  onChange={this.handleBoltedFaultCurrentChange.bind(this)}
                 />
               </div>
             </div>
             <div class="row">
               <div class="input-field col s12">
                 <input
-                  id="relayOpTime"
-                  placeholder="Relay Op Time (seconds)"
+                  id="totalClearingTime"
+                  placeholder="Total Clearing Time (seconds)"
                   type="number"
                   min="0"
                   step="0.001"
                   class="validate"
                   required
-                  value={this.state.calcParams.relayOpTime}
-                  onChange={this.handleRelayOpTimeChange}
+                  value={this.state.calcParams.totalClearingTime}
+                  onChange={this.handleTotalClearingTimeChange.bind(this)}
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <input
+                  id="incidentEnergy"
+                  placeholder="Incident Energy"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="validate"
+                  required
+                  value={this.state.results.incidentEnergy}
+                  onChange={this.handleIncidentEnergyChange.bind(this)}
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <input
+                  id="arcFlashEnergy"
+                  placeholder="Calculated Arc Flash Energy"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  class="validate"
+                  required
+                  value={this.state.results.calculatedArcFlashEnergy}
+                  onChange={this.handleArcFlashEnergyChange.bind(this)}
                 />
               </div>
             </div>
@@ -228,7 +309,7 @@ class New1584Form extends Component {
                   class="materialize-textarea"
                   placeholder="Add Comments Here"
                   value={this.state.calcParams.comment}
-                  onChange={this.handleCommentChange}
+                  onChange={this.handleCommentChange.bind(this)}
                 />
               </div>
             </div>

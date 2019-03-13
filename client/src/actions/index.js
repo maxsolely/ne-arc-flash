@@ -98,20 +98,33 @@ export const fetchStationInfo = (xauth, id) => async dispatch => {
   }
 };
 
-export const add1584Calc = (xauth, body) => async dispatch => {
+export const add1584Calc = (
+  xauth,
+  { calcParams, results }
+) => async dispatch => {
   //for some reason, faultCurrent and relayOpTime are getting converted to a string when they are getting passed into this action creator. They both need to be a Number.
-  let updatedBody = { ...body };
-  console.log(updatedBody);
-  updatedBody.faultCurrent = parseFloat(updatedBody.faultCurrent);
-  updatedBody.relayOpTime = parseFloat(updatedBody.relayOpTime);
+  let reformattedCalcParams = { ...calcParams };
+  reformattedCalcParams.boltedFaultCurrent = parseFloat(
+    reformattedCalcParams.boltedFaultCurrent
+  );
+  reformattedCalcParams.totalClearingTime = parseFloat(
+    reformattedCalcParams.totalClearingTime
+  );
 
-  console.log('body from action creator', updatedBody);
+  let reformattedResults = { ...results };
+  reformattedResults.incidentEnergy = parseFloat(
+    reformattedResults.incidentEnergy
+  );
+  reformattedResults.calculatedArcFlashEnergy = parseFloat(
+    reformattedResults.calculatedArcFlashEnergy
+  );
+
   if (xauth === null || xauth.length === 0) {
     dispatch({ type: ADD_1584_CALC, payload: {} });
   } else {
     const res = await axios.post(
       '/api/arccalc1584',
-      { calcParams: updatedBody },
+      { calcParams: reformattedCalcParams, results: reformattedResults },
       {
         headers: { 'x-auth': xauth }
       }

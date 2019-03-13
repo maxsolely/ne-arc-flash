@@ -36,6 +36,20 @@ function createCleanObject(obj) {
   return clonedObject;
 }
 
+function calculateHRC(arcEnergy) {
+  if (arcEnergy <= 4) {
+    return '1';
+  } else if (arcEnergy > 4 && arcEnergy <= 8) {
+    return '2';
+  } else if (arcEnergy > 8 && arcEnergy <= 25) {
+    return '3';
+  } else if (arcEnergy > 25 && arcEnergy <= 40) {
+    return '4';
+  } else {
+    return 'Exceeds Level 4';
+  }
+}
+
 app.get('/api/current_user', (req, res) => {
   res.send('hello from localhost 8000');
 });
@@ -258,50 +272,53 @@ app.post('/api/arccalc1584', authenticate, (req, res) => {
     'division',
     'faultType',
     'stationConfig',
-    'grounded',
+    'electrodeConfig',
     'lineVoltage',
-    'faultCurrent',
-    'relayOpTime',
+    'boltedFaultCurrent',
+    'totalClearingTime',
     'comment'
   ]);
 
+  var bodyResults = _.pick(req.body.results, [
+    'incidentEnergy',
+    'calculatedArcFlashEnergy'
+  ]);
+
+  var hrcLevel = calculateHRC(parseFloat(bodyResults.calculatedArcFlashEnergy));
+
   // if calcParams is missing a value (which would make at least one of the results NaN), then calculate1584.js will return an empty object
-  var results = calculate.calculate1584Results(bodyCalcParams);
+  // var results = calculate.calculate1584Results(bodyCalcParams);
 
-  if (Object.keys(results).length === 4) {
-    Station.findOne({
-      name: bodyCalcParams.sub,
-      voltage: bodyCalcParams.lineVoltage
-    })
-      .then(station => {
-        if (!station) {
-          return res.status(404).send('substation does not exist in database');
-        } else {
-          var arcCalc1584 = new ArcCalc1584({
-            calcParams: { ...bodyCalcParams },
-            results: { ...results }
+  Station.findOne({
+    name: bodyCalcParams.sub,
+    voltage: bodyCalcParams.lineVoltage
+  })
+    .then(station => {
+      if (!station) {
+        return res.status(404).send('substation does not exist in database');
+      } else {
+        var arcCalc1584 = new ArcCalc1584({
+          calcParams: { ...bodyCalcParams },
+          results: { ...bodyResults, hrcLevel }
+        });
+
+        arcCalc1584
+          .save()
+          .then(arcCalc1584 => {
+            station.stationCalcs.push(arcCalc1584._id);
+            station
+              .save()
+              .then(res.send(arcCalc1584))
+              .catch(e => console.error(e));
+          })
+          .catch(e => {
+            res.status(400).send(e);
           });
-
-          arcCalc1584
-            .save()
-            .then(arcCalc1584 => {
-              station.stationCalcs.push(arcCalc1584._id);
-              station
-                .save()
-                .then(res.send(arcCalc1584))
-                .catch(e => console.error(e));
-            })
-            .catch(e => {
-              res.status(400).send(e);
-            });
-        }
-      })
-      .catch(e => {
-        res.status(400).send(e);
-      });
-  } else {
-    res.status(400).send();
-  }
+      }
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
 });
 
 app.get('/api/arccalc1584', authenticate, (req, res) => {

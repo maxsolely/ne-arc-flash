@@ -315,10 +315,11 @@ describe('PATCH /stations/:id', () => {
 describe('POST /arccalc1584', () => {
   it('should post an arc flash calculation', done => {
     var calcParams = arcCalc1584calculations[0].calcParams;
+    var results = arcCalc1584calculations[0].results;
     request(app)
       .post('/api/arccalc1584')
       .set('x-auth', users[0].tokens[0].token)
-      .send({ calcParams })
+      .send({ calcParams, results })
       .expect(200)
       .end((err, res) => {
         if (err) {
@@ -344,14 +345,19 @@ describe('POST /arccalc1584', () => {
       division: 'Bay State West',
       faultType: '3 phase',
       stationConfig: 'Metalclad',
+      electrodeConfig: 'HCB',
       lineVoltage: '13.8 kV',
-      grounded: true,
-      faultCurrent: 10042
+      boltedFaultCurrent: 10042
+    };
+
+    var results = {
+      incidentEnergy: 6.91,
+      calculatedArcFlashEnergy: 30.95
     };
     request(app)
       .post('/api/arccalc1584')
       .set('x-auth', users[0].tokens[0].token)
-      .send({ calcParams })
+      .send({ calcParams, results })
       .expect(400)
       .end((err, res) => {
         if (err) {
@@ -375,15 +381,20 @@ describe('POST /arccalc1584', () => {
       division: 'Bay State West',
       faultType: '3 phase',
       stationConfig: 'Metalclad',
+      electrodeConfig: 'HCB',
       lineVoltage: '69 kV',
-      grounded: true,
       faultCurrent: 10042,
       relayOpTime: 0.983
+    };
+
+    var results = {
+      incidentEnergy: 6.91,
+      calculatedArcFlashEnergy: 30.95
     };
     request(app)
       .post('/api/arccalc1584')
       .set('x-auth', users[0].tokens[0].token)
-      .send({ calcParams })
+      .send({ calcParams, results })
       .expect(404)
       .end(done);
   });
@@ -420,8 +431,8 @@ describe('GET /arccalc1584/:id', () => {
       .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect(res => {
-        expect(res.body.calculation.calcParams.faultCurrent).toBe(
-          arcCalc1584calculations[0].calcParams.faultCurrent
+        expect(res.body.calculation.calcParams.boltedFaultCurrent).toBe(
+          arcCalc1584calculations[0].calcParams.boltedFaultCurrent
         );
       })
       .end(done);
@@ -450,6 +461,7 @@ describe('DELETE /arccalc1584/:id', () => {
     var id = arcCalc1584calculations[0]._id.toHexString();
     request(app)
       .delete(`/api/arccalc1584/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect(res => {
         expect(res.body.updatedStation.stationCalcs.length).toBe(1);
@@ -473,14 +485,16 @@ describe('DELETE /arccalc1584/:id', () => {
   it('should return 404 if 1584 calculation not found', done => {
     var unkownId = new ObjectID().toHexString;
     request(app)
-      .get(`/api/arccalc1584/${unkownId}`)
+      .delete(`/api/arccalc1584/${unkownId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
 
   it('should return 404 for non-object ids', done => {
     request(app)
-      .get(`/api/arccalc1584/123`)
+      .delete(`/api/arccalc1584/123`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });

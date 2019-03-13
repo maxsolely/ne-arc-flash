@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { CalculationEntry } from './common';
+import { CalculationEntry, LoginCard } from './common';
 import * as actions from '../actions';
 
 class StationProfile extends Component {
@@ -22,7 +22,7 @@ class StationProfile extends Component {
         return;
 
       case false:
-        return <h1>you need to be logged in</h1>;
+        return <LoginCard />;
 
       default: {
         const {
@@ -92,7 +92,7 @@ class StationProfile extends Component {
                   <CalculationEntry
                     faultType={e.calcParams.faultType}
                     incidentEnergy={e.results.incidentEnergy}
-                    eightCal={e.results.eightCalBoundary}
+                    eightCal={e.results.calculatedArcFlashEnergy}
                     hrcLevel={e.results.hrcLevel}
                     calcID={e._id}
                   />

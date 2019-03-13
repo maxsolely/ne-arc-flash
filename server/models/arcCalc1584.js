@@ -20,6 +20,7 @@ const divisionEnums = [
 ];
 
 const hrcEnums = ['1', '2', '3', '4', 'Exceeds Level 4'];
+const electordeConfigEnums = ['VCB', 'VCBB', 'HCB', 'VOA', 'HOA'];
 
 // ['sub', 'division', faultType', 'stationConfig', 'grounded', 'lineVoltage', 'faultCurrent', 'relayOpTime']
 // ['arcCurrent', 'incidentEnergy', 'eightCalBoundary', 'hrcLevel' ]
@@ -54,9 +55,11 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
       trim: true,
       enum: ['Metalclad', 'Open-Air']
     },
-    grounded: {
-      type: Boolean,
-      required: true
+    electrodeConfig: {
+      type: String,
+      trim: true,
+      required: true,
+      enum: electordeConfigEnums
     },
     lineVoltage: {
       type: String,
@@ -64,11 +67,11 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
       required: true,
       enum: voltageEnums
     },
-    faultCurrent: {
+    boltedFaultCurrent: {
       type: Number,
       required: true
     },
-    relayOpTime: {
+    totalClearingTime: {
       type: Number,
       required: true
     },
@@ -77,15 +80,11 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
     }
   },
   results: {
-    arcCurrent: {
-      type: Number,
-      required: true
-    },
     incidentEnergy: {
       type: Number,
       required: true
     },
-    eightCalBoundary: {
+    calculatedArcFlashEnergy: {
       type: Number,
       required: true
     },
@@ -98,3 +97,10 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
 });
 
 module.exports = { ArcCalc1584 };
+
+// add electrode arrangment
+// take grounded out
+//bolted fault current instead of fault current
+// total clearing time instead of realay op time. Total clearing (relay op time + breaker clearing)
+//get ride of arcCurrent from results
+// eightCalBoundary becomes calculcated arc flash energy which is then used to figure out HRC level

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StationEntry } from './common';
+import { StationEntry, LoginCard } from './common';
 import * as actions from '../actions';
 
 class Stations extends Component {
@@ -8,40 +8,53 @@ class Stations extends Component {
     this.props.fetchStations(this.props.auth.xauth);
   }
 
-  render() {
-    return (
-      <div>
-        <div
-          class="row amber darken-4"
-          style={{ borderBottom: '2px solid black', textAlign: 'center' }}
-        >
-          <div class="col s3">
-            <span class="flow-text">Station Name:</span>
-          </div>
-          <div class="col s3">
-            <span class="flow-text">Division:</span>
-          </div>
-          <div class="col s2">
-            <span class="flow-text">Voltage (kV):</span>
-          </div>
-          <div class="col s2">
-            <span class="flow-text">Number of Calcs:</span>
-          </div>
-        </div>
+  renderContent() {
+    switch (this.props.auth._id) {
+      case null:
+        return;
 
-        {this.props.stations.map(e => {
-          return (
-            <StationEntry
-              name={e.name}
-              division={e.division}
-              voltage={e.voltage}
-              calcs={e.stationCalcs.length}
-              stationID={e._id}
-            />
-          );
-        })}
-      </div>
-    );
+      case false:
+        return <LoginCard />;
+
+      default:
+        return (
+          <div>
+            <div
+              class="row amber darken-4"
+              style={{ borderBottom: '2px solid black', textAlign: 'center' }}
+            >
+              <div class="col s3">
+                <span class="flow-text">Station Name:</span>
+              </div>
+              <div class="col s3">
+                <span class="flow-text">Division:</span>
+              </div>
+              <div class="col s2">
+                <span class="flow-text">Voltage (kV):</span>
+              </div>
+              <div class="col s2">
+                <span class="flow-text">Number of Calcs:</span>
+              </div>
+            </div>
+
+            {this.props.stations.map(e => {
+              return (
+                <StationEntry
+                  name={e.name}
+                  division={e.division}
+                  voltage={e.voltage}
+                  calcs={e.stationCalcs.length}
+                  stationID={e._id}
+                />
+              );
+            })}
+          </div>
+        );
+    }
+  }
+
+  render() {
+    return <div class="row">{this.renderContent()}</div>;
   }
 }
 

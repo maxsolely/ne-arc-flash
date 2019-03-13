@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import { LoginCard } from './common';
 
 class NewStationForm extends Component {
   constructor(props) {
@@ -53,7 +54,7 @@ class NewStationForm extends Component {
         return;
 
       case false:
-        return <h1>you need to be logged in</h1>;
+        return <LoginCard />;
 
       default:
         return (
