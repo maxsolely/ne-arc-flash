@@ -21,6 +21,7 @@ const arcCalc1584calculations = [
       lineVoltage: '13.8 kV',
       boltedFaultCurrent: 5432,
       totalClearingTime: 0.973,
+      createdAt: Date.now(),
       comment: 'No comment'
     },
     results: {
@@ -41,6 +42,7 @@ const arcCalc1584calculations = [
       lineVoltage: '13.8 kV',
       boltedFaultCurrent: 10042,
       totalClearingTime: 0.521,
+      createdAt: Date.now(),
       comment: 'No Comment'
     },
     results: {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { Link } from 'react-router-dom';
+import success from '../images/partnersSuccess.png';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -42,7 +43,11 @@ class LoginForm extends Component {
 
       case false:
         return (
-          <form onSubmit={this.handleSubmit}>
+          <form
+            onSubmit={this.handleSubmit}
+            className="container"
+            style={styles.formContainer}
+          >
             <label id="email">
               Email:
               <input
@@ -59,15 +64,42 @@ class LoginForm extends Component {
                 onChange={this.handlePasswordChange}
               />
             </label>
-            <input type="submit" value="submit" />
+            <input
+              type="submit"
+              value="submit"
+              className="btn waves-effect waves-light btn-large teal"
+              style={styles.buttonContainer}
+            />
           </form>
         );
 
       default:
         return (
-          <div>
-            <h1> you are logged in as {this.props.auth.email}</h1>
-            <Link to="/dashboard">Go to dashboard</Link>
+          // <div>
+          //   <h1> you are logged in as {this.props.auth.email}</h1>
+          //   <Link to="/dashboard">Go to dashboard</Link>
+          // </div>
+
+          <div className="row">
+            <div
+              className="col s12"
+              style={{
+                display: 'flex',
+                justifyContent: 'center'
+              }}
+            >
+              <div className="card teal">
+                <div className="card-content white-text center-align ">
+                  <span className="card-title">Login Success!</span>
+                  <img src={success} />
+                </div>
+                <div className="card-action">
+                  <Link className="text-amber center-align" to="/dashboard">
+                    Go to dashboard
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         );
     }
@@ -77,6 +109,16 @@ class LoginForm extends Component {
     return <div>{this.renderContent()}</div>;
   }
 }
+
+const styles = {
+  formContainer: {
+    marginTop: 30
+  },
+
+  buttonContainer: {
+    marginTop: 10
+  }
+};
 
 function mapStateToProps(state) {
   return { auth: state.auth };

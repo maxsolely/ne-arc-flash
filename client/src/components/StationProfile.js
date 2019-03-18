@@ -34,54 +34,43 @@ class StationProfile extends Component {
         } = this.props.stationInfo;
 
         return (
-          <div>
-            <div
-              class="row"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: '0px'
-              }}
-            >
-              <h1 class="col s6">{name || ' still rendering'}</h1>
-              <Link
-                class="col s2 offset-s4 waves-effect waves-light btn-large"
-                to="/"
+          <div className="container">
+            <div className="row">
+              <div className="col s12 m6">
+                <h1>{name || ' still rendering'}</h1>
+                <h3>{division || 'still rendering'}</h3>
+                <h5>{voltage || 'still rendering'}</h5>
+              </div>
+              <div
+                className="col s12 m3 offset-m3"
+                style={{ marginTop: '2.8rem' }}
               >
-                Edit Station
-              </Link>
+                <Link
+                  class="waves-effect waves-light btn-large amber darken-2"
+                  style={{ width: '100%' }}
+                  to="/"
+                >
+                  Edit Station
+                </Link>
+                <Link
+                  class="waves-effect waves-light btn-large teal"
+                  style={{ width: '100%' }}
+                  to={{
+                    pathname: '/add1584Calculation',
+                    state: {
+                      _id: this.state.stationID,
+                      name,
+                      voltage,
+                      stationConfig,
+                      division
+                    }
+                  }}
+                >
+                  Add New Calc
+                </Link>
+              </div>
             </div>
-            <div
-              class="row"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: '0px'
-              }}
-            >
-              <h4 class="col s6">{voltage || 'still rendering'}</h4>
-              <Link
-                class="col s2 offset-s4 waves-effect waves-light btn-large"
-                to={{
-                  pathname: '/add1584Calculation',
-                  state: {
-                    _id: this.state.stationID,
-                    name,
-                    voltage,
-                    stationConfig,
-                    division
-                  }
-                }}
-              >
-                New Calc
-              </Link>
-            </div>
-            <div class="row">
-              <p class="col s6">{division || 'still rendering'}</p>
-            </div>
-            <div class="row">
-              <p class="col s6">{stationConfig || 'still rendering'}</p>
-            </div>
+
             {stationCalcs === undefined || stationCalcs.length === 0 ? (
               <p class="col s6">
                 There are no calculations for this station yet
@@ -90,7 +79,8 @@ class StationProfile extends Component {
               stationCalcs.map(e => {
                 return (
                   <CalculationEntry
-                    faultType={e.calcParams.faultType}
+                    date={e.calcParams.createdAt.slice(5, 10)}
+                    comment={e.calcParams.comment}
                     incidentEnergy={e.results.incidentEnergy}
                     eightCal={e.results.calculatedArcFlashEnergy}
                     hrcLevel={e.results.hrcLevel}

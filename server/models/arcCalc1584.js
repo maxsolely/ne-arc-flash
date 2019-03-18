@@ -75,6 +75,10 @@ var ArcCalc1584 = mongoose.model('ArcCalc1584', {
       type: Number,
       required: true
     },
+    createdAt: {
+      type: Date,
+      default: Date.now()
+    },
     comment: {
       type: String
     }

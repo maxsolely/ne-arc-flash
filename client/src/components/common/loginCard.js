@@ -11,7 +11,7 @@ const LoginCard = () => {
           justifyContent: 'center'
         }}
       >
-        <div className="card blue-grey darken-1">
+        <div className="card teal">
           <div className="card-content white-text">
             <span className="card-title">Unauthorized Access</span>
             <p>
@@ -19,8 +19,11 @@ const LoginCard = () => {
               continue!
             </p>
           </div>
-          <div className="card-action">
-            <Link to={{ pathname: '/login' }}> Click Here To Login </Link>
+          <div className="card-action center-align">
+            <Link className="amber-text" to={{ pathname: '/login' }}>
+              {' '}
+              Click Here To Login{' '}
+            </Link>
           </div>
         </div>
       </div>

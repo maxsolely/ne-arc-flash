@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { StationEntry, LoginCard } from './common';
 import * as actions from '../actions';
 
 class Stations extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      search: ''
+    };
+  }
+
   componentDidMount() {
     this.props.fetchStations(this.props.auth.xauth);
+  }
+
+  handleSearchChange(event) {
+    this.setState({ search: event.target.value });
   }
 
   renderContent() {
@@ -16,47 +28,84 @@ class Stations extends Component {
       case false:
         return <LoginCard />;
 
-      default:
+      default: {
+        const { search } = this.state;
+        let stations = this.props.stations;
+        if (search !== '') {
+          stations = stations.filter(e => {
+            return e.name.indexOf(search) >= 0;
+          });
+        }
+        // if (search !== '' && stations.name.indexOf(search) === -1) {
+        //   return stations;
+        // }
         return (
-          <div>
-            <div
-              class="row amber darken-4"
-              style={{ borderBottom: '2px solid black', textAlign: 'center' }}
-            >
-              <div class="col s3">
-                <span class="flow-text">Station Name:</span>
-              </div>
-              <div class="col s3">
-                <span class="flow-text">Division:</span>
-              </div>
-              <div class="col s2">
-                <span class="flow-text">Voltage (kV):</span>
-              </div>
-              <div class="col s2">
-                <span class="flow-text">Number of Calcs:</span>
+          <div className="container">
+            <div className="row">
+              <div className="input-field col s6">
+                <i className="material-icons prefix">search</i>
+                <input
+                  id="icon_prefix"
+                  type="text"
+                  value={this.state.search}
+                  onChange={this.handleSearchChange.bind(this)}
+                />
+                <label for="icon_prefix">
+                  {this.state.search === '' ? 'Search Station Name' : ''}
+                </label>
               </div>
             </div>
+            <table className="striped z-depth-3" style={styles.tableStyle}>
+              <thead>
+                <tr>
+                  <th className="flow-text center-align">Station Name:</th>
+                  <th className="flow-text center-align">Division:</th>
+                  <th className="flow-text center-align">Voltage (kV):</th>
+                  <th className="flow-text center-align">Number of Calcs:</th>
+                  <th />
+                </tr>
+              </thead>
 
-            {this.props.stations.map(e => {
-              return (
-                <StationEntry
-                  name={e.name}
-                  division={e.division}
-                  voltage={e.voltage}
-                  calcs={e.stationCalcs.length}
-                  stationID={e._id}
-                />
-              );
-            })}
+              <tbody>
+                {stations.map(e => {
+                  return (
+                    <tr>
+                      <td className="center-align">{e.name}</td>
+                      <td className="center-align">{e.division}</td>
+                      <td className="center-align">{e.voltage}</td>
+                      <td className="center-align">{e.stationCalcs.length}</td>
+                      <td>
+                        <Link
+                          to={{
+                            pathname: '/stationProfile',
+                            state: { _id: e._id }
+                          }}
+                          className="waves-effect waves-light btn-small teal"
+                        >
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         );
+      }
     }
   }
 
   render() {
-    return <div class="row">{this.renderContent()}</div>;
+    return <div className="row">{this.renderContent()}</div>;
   }
 }
+
+const styles = {
+  tableStyle: {
+    marginTop: 15
+  }
+};
 
 function mapStateToProps(state) {
   return { auth: state.auth, stations: state.stations.stationsArray };
