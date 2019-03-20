@@ -8,7 +8,8 @@ import {
   FETCH_1584_CALCULATION_INFO,
   ADD_1584_CALC,
   DELETE_1584_CALC,
-  ERROR_400
+  ERROR_400,
+  RESET_ERROR_MESSAGE
 } from './types';
 
 // export const fetchUser = () => {
@@ -67,11 +68,16 @@ export const addStation = (xauth, body) => async dispatch => {
   if (xauth === null || xauth.length === 0) {
     dispatch({ type: ADD_STATION, payload: {} });
   } else {
-    const res = await axios.post('/api/stations', body, {
-      headers: { 'x-auth': xauth }
-    });
+    try {
+      const res = await axios.post('/api/stations', body, {
+        headers: { 'x-auth': xauth }
+      });
 
-    dispatch({ type: ADD_STATION, payload: res });
+      dispatch({ type: ADD_STATION, payload: res });
+    } catch (error) {
+      console.log(error);
+      dispatch({ type: ERROR_400, payload: error.response.data.message });
+    }
   }
 };
 
@@ -167,4 +173,8 @@ export const delete1584Calc = (xauth, calcID) => async dispatch => {
 
     dispatch({ type: DELETE_1584_CALC, payload: res.data });
   }
+};
+
+export const resetErrorMessage = () => {
+  return { type: RESET_ERROR_MESSAGE };
 };

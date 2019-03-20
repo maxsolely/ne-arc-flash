@@ -42,11 +42,13 @@ class New1584Form extends Component {
   showModalFunction() {
     console.log('show modal triggered');
     console.log(this.state.showModal);
+    this.props.resetErrorMessage();
     this.setState({ showModal: !this.state.showModal });
   }
 
   deleteCalculation() {
     console.log('triggering delete 1584calc');
+    this.props.resetErrorMessage();
     this.props.delete1584Calc(this.props.auth.xauth, this.props.calcID);
 
     // <Redirect

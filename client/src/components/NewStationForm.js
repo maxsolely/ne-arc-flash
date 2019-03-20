@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import * as actions from '../actions';
-import { LoginCard } from './common';
+import { Modal, LoginCard } from './common';
 
 class NewStationForm extends Component {
   constructor(props) {
@@ -10,7 +11,9 @@ class NewStationForm extends Component {
       name: '',
       division: '',
       voltage: '',
-      stationConfig: ''
+      stationConfig: '',
+      showModal: false,
+      redirect: false
     };
 
     this.handleStationConfigChange = this.handleStationConfigChange.bind(this);
@@ -45,7 +48,57 @@ class NewStationForm extends Component {
     console.log(this.state);
     console.log(this.props.auth.xauth);
     this.props.addStation(this.props.auth.xauth, this.state);
-    this.setState({ name: '', division: '', voltage: '', stationConfig: '' });
+    this.setState({
+      name: '',
+      division: '',
+      voltage: '',
+      stationConfig: '',
+      showModal: !this.state.showModal
+    });
+  }
+
+  showModalFunction() {
+    console.log('show modal triggered');
+    console.log(this.state.showModal);
+    this.props.resetErrorMessage();
+    this.setState({ showModal: !this.state.showModal });
+  }
+
+  triggerRedirect() {
+    this.setState({ redirect: !this.state.redirect });
+  }
+  renderRedirect() {
+    if (this.state.redirect) {
+      return <Redirect to="/stations" />;
+    }
+  }
+
+  renderModal() {
+    if (!this.state.showModal) {
+      return null;
+    } else {
+      const modalContent = this.props.errorMessage ? (
+        <div className="row">Error: {this.props.errorMessage}</div>
+      ) : (
+        <div>
+          <div class="row">
+            Successfully added {this.state.name} to the database!
+          </div>
+        </div>
+      );
+
+      return (
+        <Modal
+          modalTitle="Add Station Results"
+          onCancel={this.showModalFunction.bind(this)}
+          onCancelButtonText="Close"
+          onConfirm={this.triggerRedirect.bind(this)}
+          onConfirmButtonText="Go To Stations"
+        >
+          {modalContent}
+        </Modal>
+      );
+    }
   }
 
   renderContent() {
@@ -188,6 +241,7 @@ class NewStationForm extends Component {
                   </div>
                   <input
                     className="btn waves-effect waves-light btn-large col s4 offset-s4"
+                    style={{ zIndex: 0 }}
                     type="submit"
                     value="submit"
                   />
@@ -200,7 +254,13 @@ class NewStationForm extends Component {
   }
 
   render() {
-    return <div class="row">{this.renderContent()}</div>;
+    return (
+      <div class="row">
+        {this.renderContent()}
+        {this.renderModal()}
+        {this.renderRedirect()}
+      </div>
+    );
   }
 }
 
@@ -215,7 +275,7 @@ const styles = {
 };
 
 function mapStateToProps(state) {
-  return { auth: state.auth };
+  return { auth: state.auth, errorMessage: state.errorMessage };
 }
 
 export default connect(
