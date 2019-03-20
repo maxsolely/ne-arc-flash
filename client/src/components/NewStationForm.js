@@ -58,117 +58,143 @@ class NewStationForm extends Component {
 
       default:
         return (
-          <form class="col s12" onSubmit={this.handleSubmit}>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="station_name"
-                  placeholder="Station Name"
-                  type="text"
-                  class="validate"
-                  value={this.state.name}
-                  onChange={this.handleStationNameChange}
-                />
-                {/* <label for="station_name">Station Name</label> */}
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <p class="col s3">
-                  <label>
-                    <input
-                      name="division"
-                      type="radio"
-                      value="Ocean State"
-                      onClick={this.handleDivisionChange}
-                    />
-                    <span>Ocean State</span>
-                  </label>
-                </p>
-                <p class="col s3">
-                  <label>
-                    <input
-                      name="division"
-                      type="radio"
-                      value="Bay State West"
-                      onClick={this.handleDivisionChange}
-                    />
-                    <span>Bay State West</span>
-                  </label>
-                </p>
-                <p class="col s3">
-                  <label>
-                    <input
-                      name="division"
-                      type="radio"
-                      value="Bay State South"
-                      onClick={this.handleDivisionChange}
-                    />
-                    <span>Bay State South</span>
-                  </label>
-                </p>
-                <p class="col s3">
-                  <label>
-                    <input
-                      name="division"
-                      type="radio"
-                      value="North and Granite"
-                      onClick={this.handleDivisionChange}
-                    />
-                    <span>North and Granite</span>
-                  </label>
-                </p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s6">
-                <select
-                  class="browser-default"
-                  onChange={this.handleVoltageChange}
+          <div className="container">
+            <form className="col s12" onSubmit={this.handleSubmit}>
+              <section
+                className="section amber lighten-4 z-depth-2"
+                style={styles.sectionStyle}
+              >
+                <div className="row">
+                  <h4 className="col s12" style={styles.headerStyle}>
+                    Station Information:
+                  </h4>
+                </div>
+                <div
+                  id="newStationInputContainer"
+                  style={{ padding: '0px 10px' }}
                 >
-                  <option value="" disabled selected>
-                    Choose a Voltage (kV)
-                  </option>
-                  <option value="4 kV">4</option>
-                  <option value="13.8 kV">13.8</option>
-                  <option value="34.5 kV">34.5</option>
-                  <option value="69 kV">69</option>
-                  <option value="115 kV">115</option>
-                </select>
-              </div>
-              <div class="input-field col s3">
-                <p>
-                  <label>
-                    <input
-                      name="metal_or_open"
-                      type="radio"
-                      value="Metalclad"
-                      onClick={this.handleStationConfigChange}
-                    />
-                    <span>Metalclad</span>
-                  </label>
-                </p>
-              </div>
-              <div class="input-field col s3">
-                <p>
-                  <label>
-                    <input
-                      name="metal_or_open"
-                      type="radio"
-                      value="Open-Air"
-                      onClick={this.handleStationConfigChange}
-                    />
-                    <span>Open-Air</span>
-                  </label>
-                </p>
-              </div>
-            </div>
-            <input
-              class="btn waves-effect waves-light btn-large"
-              type="submit"
-              value="submit"
-            />
-          </form>
+                  <div className="row">
+                    <div className="input-field col s12">
+                      <input
+                        id="stationName"
+                        placeholder="Station Name"
+                        type="text"
+                        class="validate"
+                        value={this.state.name}
+                        onChange={this.handleStationNameChange}
+                      />
+                      <label for="stationName" className="active">
+                        Station Name:
+                      </label>
+                      {/* <label for="station_name">Station Name</label> */}
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="input-field col s12 m6">
+                      <select
+                        className="browser-default"
+                        onChange={this.handleVoltageChange}
+                      >
+                        <option value="" disabled selected>
+                          Choose a Voltage (kV)
+                        </option>
+                        <option value="4 kV">4</option>
+                        <option value="13.8 kV">13.8</option>
+                        <option value="34.5 kV">34.5</option>
+                        <option value="69 kV">69</option>
+                        <option value="115 kV">115</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="input-field col s12" id="division">
+                      <p className="col s6 m3">
+                        <label>
+                          <input
+                            name="division"
+                            type="radio"
+                            value="Ocean State"
+                            onClick={this.handleDivisionChange}
+                          />
+                          <span>Ocean State</span>
+                        </label>
+                      </p>
+                      <p className="col s6 m3">
+                        <label>
+                          <input
+                            name="division"
+                            type="radio"
+                            value="Bay State West"
+                            onClick={this.handleDivisionChange}
+                          />
+                          <span>Bay State West</span>
+                        </label>
+                      </p>
+                      <p className="col s6 m3">
+                        <label>
+                          <input
+                            name="division"
+                            type="radio"
+                            value="Bay State South"
+                            onClick={this.handleDivisionChange}
+                          />
+                          <span>Bay State South</span>
+                        </label>
+                      </p>
+                      <p className="col s6 m3">
+                        <label>
+                          <input
+                            name="division"
+                            type="radio"
+                            value="North and Granite"
+                            onClick={this.handleDivisionChange}
+                          />
+                          <span>North and Granite</span>
+                        </label>
+                      </p>
+                      <label for="division" className="active">
+                        Division:
+                      </label>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="input-field col s12" id="stationConfig">
+                      <p className="col s6 m3">
+                        <label>
+                          <input
+                            name="metal_or_open"
+                            type="radio"
+                            value="Metalclad"
+                            onClick={this.handleStationConfigChange}
+                          />
+                          <span>Metalclad</span>
+                        </label>
+                      </p>
+                      <p className="col s6 m3">
+                        <label>
+                          <input
+                            name="metal_or_open"
+                            type="radio"
+                            value="Open-Air"
+                            onClick={this.handleStationConfigChange}
+                          />
+                          <span>Open-Air</span>
+                        </label>
+                      </p>
+                      <label for="stationConfig" className="active">
+                        Station Config:
+                      </label>
+                    </div>
+                  </div>
+                  <input
+                    className="btn waves-effect waves-light btn-large col s4 offset-s4"
+                    type="submit"
+                    value="submit"
+                  />
+                </div>
+              </section>
+            </form>
+          </div>
         );
     }
   }
@@ -177,6 +203,16 @@ class NewStationForm extends Component {
     return <div class="row">{this.renderContent()}</div>;
   }
 }
+
+const styles = {
+  sectionStyle: {
+    margin: '10px 0'
+  },
+  headerStyle: {
+    margin: '0',
+    paddingLeft: '15px'
+  }
+};
 
 function mapStateToProps(state) {
   return { auth: state.auth };

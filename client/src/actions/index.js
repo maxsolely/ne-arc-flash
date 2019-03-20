@@ -7,7 +7,8 @@ import {
   FETCH_STATION_INFO,
   FETCH_1584_CALCULATION_INFO,
   ADD_1584_CALC,
-  DELETE_1584_CALC
+  DELETE_1584_CALC,
+  ERROR_400
 } from './types';
 
 // export const fetchUser = () => {
@@ -140,15 +141,19 @@ export const add1584Calc = (
   if (xauth === null || xauth.length === 0) {
     dispatch({ type: ADD_1584_CALC, payload: {} });
   } else {
-    const res = await axios.post(
-      '/api/arccalc1584',
-      { calcParams: reformattedCalcParams, results: reformattedResults },
-      {
-        headers: { 'x-auth': xauth }
-      }
-    );
-
-    dispatch({ type: ADD_1584_CALC, payload: res.data });
+    try {
+      const res = await axios.post(
+        '/api/arccalc1584',
+        { calcParams: reformattedCalcParams, results: reformattedResults },
+        {
+          headers: { 'x-auth': xauth }
+        }
+      );
+      dispatch({ type: ADD_1584_CALC, payload: res.data });
+    } catch (error) {
+      console.log(error.response.data.message);
+      dispatch({ type: ERROR_400, payload: error.response.data.message });
+    }
   }
 };
 

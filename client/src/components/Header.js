@@ -19,11 +19,8 @@ class Header extends Component {
             <li>
               <Link to="/stations">Stations</Link>
             </li>
-            <li>
+            <li className="hide-on-small-and-down">
               <Link to="/addStation">Add Station</Link>
-            </li>
-            <li>
-              <Link to="/calculations">Calculations</Link>
             </li>
             <li>
               <a href="#">Logout</a>
@@ -43,7 +40,7 @@ class Header extends Component {
           >
             NE Arc Flash
           </Link>
-          <ul className="right">{this.renderContent()}</ul>
+          <ul className="right ">{this.renderContent()}</ul>
         </div>
       </nav>
     );

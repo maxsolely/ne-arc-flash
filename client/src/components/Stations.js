@@ -33,16 +33,14 @@ class Stations extends Component {
         let stations = this.props.stations;
         if (search !== '') {
           stations = stations.filter(e => {
-            return e.name.indexOf(search) >= 0;
+            const name = e.name.toLowerCase();
+            return name.indexOf(search.toLowerCase()) >= 0;
           });
         }
-        // if (search !== '' && stations.name.indexOf(search) === -1) {
-        //   return stations;
-        // }
         return (
           <div className="container">
             <div className="row">
-              <div className="input-field col s6">
+              <div className="input-field col s12 m6">
                 <i className="material-icons prefix">search</i>
                 <input
                   id="icon_prefix"
@@ -55,7 +53,10 @@ class Stations extends Component {
                 </label>
               </div>
             </div>
-            <table className="striped z-depth-3" style={styles.tableStyle}>
+            <table
+              className="striped z-depth-3 col s12"
+              style={styles.tableStyle}
+            >
               <thead>
                 <tr>
                   <th className="flow-text center-align">Station Name:</th>

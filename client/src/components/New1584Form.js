@@ -125,6 +125,21 @@ class New1584Form extends Component {
         calculatedArcFlashEnergy,
         hrcLevel
       } = this.props.calcResults;
+
+      const modalContent = this.props.errorMessage ? (
+        <div className="row">Error: {this.props.errorMessage}</div>
+      ) : (
+        <div>
+          <div class="row">
+            Arc Current: {incidentEnergy || 'still rendering'}
+          </div>
+          <div class="row">
+            Arc Flash Energy: {calculatedArcFlashEnergy || 'still rendering'}
+          </div>
+          <div class="row">HRC level: {hrcLevel || 'still rendering'}</div>
+        </div>
+      );
+
       return (
         <Modal
           modalTitle="Calculation Results"
@@ -133,14 +148,7 @@ class New1584Form extends Component {
           onConfirm={this.showModalFunction.bind(this)}
           onConfirmButtonText="Save Calculation"
         >
-          <div class="row">
-            Arc Current: {incidentEnergy || 'still rendering'}
-          </div>
-          <div class="row">
-            Arc Flash Energy:{' '}
-            {calculatedArcFlashEnergy || 'clearly did not work'}
-          </div>
-          <div class="row">HRC level: {hrcLevel || 'im an idiot'}</div>
+          {modalContent}
         </Modal>
       );
     }
@@ -156,169 +164,201 @@ class New1584Form extends Component {
 
       default:
         return (
-          <form class="col s12" onSubmit={this.handleSubmit.bind(this)}>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  disabled
-                  id="sub"
-                  type="text"
-                  class="validate"
-                  required
-                  value={this.state.calcParams.sub}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="sub2"
-                  placeholder="Substation 2"
-                  type="text"
-                  class="validate"
-                  required
-                  value={this.state.calcParams.sub2}
-                  onChange={this.handleSub2NameChange.bind(this)}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  disabled
-                  id="faultType"
-                  type="text"
-                  class="validate"
-                  required
-                  value={this.state.calcParams.faultType}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  disabled
-                  id="voltage"
-                  type="text"
-                  class="validate"
-                  required
-                  value={this.state.calcParams.lineVoltage}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  disabled
-                  id="stationConfig"
-                  type="text"
-                  class="validate"
-                  required
-                  value={this.state.calcParams.stationConfig}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s6">
-                <select
-                  class="browser-default"
-                  onChange={this.handleElectrodeConfigChange.bind(this)}
-                >
-                  <option value="" disabled selected>
-                    Choose an Electrode Configuration
-                  </option>
-                  <option value="VCB ">VCB</option>
-                  <option value="VCBB">VCBB</option>
-                  <option value="HCB">HCB</option>
-                  <option value="VOA">VOA</option>
-                  <option value="HOA">HOA</option>
-                </select>
-              </div>
-            </div>
-            {/* <div class="switch">
-              <label>
-                Ungrounded
-                <input type="checkbox" onClick={this.handleGroundedChange} />
-                <span class="lever" />
-                Grounded
-              </label>
-            </div> */}
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="boltedFaultCurrent"
-                  placeholder="Bolted Fault Current (Amps)"
-                  type="number"
-                  min="0"
-                  class="validate"
-                  required
-                  value={this.state.calcParams.boltedFaultCurrent}
-                  onChange={this.handleBoltedFaultCurrentChange.bind(this)}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="totalClearingTime"
-                  placeholder="Total Clearing Time (seconds)"
-                  type="number"
-                  min="0"
-                  step="0.001"
-                  class="validate"
-                  required
-                  value={this.state.calcParams.totalClearingTime}
-                  onChange={this.handleTotalClearingTimeChange.bind(this)}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="incidentEnergy"
-                  placeholder="Incident Energy"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  class="validate"
-                  required
-                  value={this.state.results.incidentEnergy}
-                  onChange={this.handleIncidentEnergyChange.bind(this)}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <input
-                  id="arcFlashEnergy"
-                  placeholder="Calculated Arc Flash Energy"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  class="validate"
-                  required
-                  value={this.state.results.calculatedArcFlashEnergy}
-                  onChange={this.handleArcFlashEnergyChange.bind(this)}
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div class="input-field col s12">
-                <textarea
-                  id="comment"
-                  class="materialize-textarea"
-                  placeholder="Add Comments Here"
-                  value={this.state.calcParams.comment}
-                  onChange={this.handleCommentChange.bind(this)}
-                />
-              </div>
-            </div>
-            <input
-              class="btn waves-effect waves-light btn-large"
-              type="submit"
-              value="submit"
-            />
-          </form>
+          <div className="container">
+            <form className="col s12" onSubmit={this.handleSubmit.bind(this)}>
+              <section
+                className="section teal lighten-4 z-depth-2"
+                style={styles.sectionStyle}
+              >
+                <div className="row">
+                  <h4 className="col s12" style={styles.headerStyle}>
+                    Params:
+                  </h4>
+                </div>
+                <div id="paramsInputContainer" style={{ padding: '0px 10px' }}>
+                  <div className="row">
+                    <div className="input-field col s12 m6">
+                      <input
+                        disabled
+                        id="sub"
+                        type="text"
+                        className="validate"
+                        required
+                        value={this.state.calcParams.sub}
+                      />
+                      <label for="sub" className="active">
+                        Primary Station:
+                      </label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <input
+                        id="sub2"
+                        type="text"
+                        required
+                        value={this.state.calcParams.sub2}
+                        onChange={this.handleSub2NameChange.bind(this)}
+                      />
+                      <label for="sub2" className="active">
+                        Remote Substation:
+                      </label>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="input-field col s12 m6">
+                      <input
+                        disabled
+                        id="faultType"
+                        type="text"
+                        className="validate"
+                        required
+                        value={this.state.calcParams.faultType}
+                      />
+                      <label for="faultType" className="active">
+                        Fault Type:
+                      </label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <input
+                        disabled
+                        id="voltage"
+                        type="text"
+                        className="validate"
+                        required
+                        value={this.state.calcParams.lineVoltage}
+                      />
+                      <label for="voltage" className="active">
+                        Voltage:
+                      </label>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="input-field col s12 m6">
+                      <input
+                        disabled
+                        id="stationConfig"
+                        type="text"
+                        className="validate"
+                        required
+                        value={this.state.calcParams.stationConfig}
+                      />
+                      <label for="stationConfig" className="active">
+                        Station Config:
+                      </label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <select
+                        className="browser-default"
+                        id="electrodeConfig"
+                        onChange={this.handleElectrodeConfigChange.bind(this)}
+                      >
+                        <option value="" disabled selected>
+                          Choose an Electrode Configuration
+                        </option>
+                        <option value="VCB ">VCB</option>
+                        <option value="VCBB">VCBB</option>
+                        <option value="HCB">HCB</option>
+                        <option value="VOA">VOA</option>
+                        <option value="HOA">HOA</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="input-field col s12 m6">
+                      <input
+                        id="boltedFaultCurrent"
+                        type="number"
+                        min="0"
+                        className="validate"
+                        required
+                        value={this.state.calcParams.boltedFaultCurrent}
+                        onChange={this.handleBoltedFaultCurrentChange.bind(
+                          this
+                        )}
+                      />
+                      <label for="boltedFaultCurrent" className="active">
+                        Bolted Fault Current (Amps):
+                      </label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <input
+                        id="totalClearingTime"
+                        type="number"
+                        min="0"
+                        step="0.001"
+                        className="validate"
+                        required
+                        value={this.state.calcParams.totalClearingTime}
+                        onChange={this.handleTotalClearingTimeChange.bind(this)}
+                      />
+                      <label for="totalClearingTime" className="active">
+                        Total Clearing Time (relay op time + breaker clearing):
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section
+                className="section amber lighten-4 z-depth-2"
+                style={styles.sectionStyle}
+              >
+                <div className="row">
+                  <h4 className="col s12" style={styles.headerStyle}>
+                    Results:
+                  </h4>
+                </div>
+                <div id="resultsInputContainer" style={{ padding: '0px 10px' }}>
+                  <div className="row">
+                    <div className="input-field col s12 m6">
+                      <input
+                        id="incidentEnergy"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className="validate"
+                        required
+                        value={this.state.results.incidentEnergy}
+                        onChange={this.handleIncidentEnergyChange.bind(this)}
+                      />
+                      <label for="incidentEnergy" className="active">
+                        Incident Energy (0.00):
+                      </label>
+                    </div>
+                    <div className="input-field col s12 m6">
+                      <input
+                        id="arcFlashEnergy"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className="validate"
+                        required
+                        value={this.state.results.calculatedArcFlashEnergy}
+                        onChange={this.handleArcFlashEnergyChange.bind(this)}
+                      />
+                      <label for="arcFlashEnergy" className="active">
+                        Calculated Arc Flash Energy (0.00):
+                      </label>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="input-field col s12">
+                      <textarea
+                        id="comment"
+                        className="materialize-textarea"
+                        placeholder="Add Comments Here"
+                        value={this.state.calcParams.comment}
+                        onChange={this.handleCommentChange.bind(this)}
+                      />
+                    </div>
+                  </div>
+                  <input
+                    class="btn waves-effect waves-light btn-large col s4 offset-s4"
+                    type="submit"
+                    value="submit"
+                  />
+                </div>
+              </section>
+            </form>
+          </div>
         );
     }
   }
@@ -333,11 +373,22 @@ class New1584Form extends Component {
   }
 }
 
+const styles = {
+  sectionStyle: {
+    margin: '10px 0'
+  },
+  headerStyle: {
+    margin: '0',
+    paddingLeft: '15px'
+  }
+};
+
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     calcResults: state.calculation1584.results || 'Still being calculated',
-    calcID: state.calculation1584._id || 'Still being calculated'
+    calcID: state.calculation1584._id || 'Still being calculated',
+    errorMessage: state.errorMessage
   };
 }
 

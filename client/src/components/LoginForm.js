@@ -48,22 +48,28 @@ class LoginForm extends Component {
             className="container"
             style={styles.formContainer}
           >
-            <label id="email">
-              Email:
+            <div className="input-field s12">
               <input
                 type="text"
+                id="email"
                 value={this.state.email}
                 onChange={this.handleEmailChange}
               />
-            </label>
-            <label id="password">
-              Password:
+              <label for="email" className="active">
+                Email
+              </label>
+            </div>
+            <div className="input-field s12">
               <input
                 type="password"
+                id="password"
                 value={this.state.password}
                 onChange={this.handlePasswordChange}
               />
-            </label>
+              <label for="password" className="active">
+                Password
+              </label>
+            </div>
             <input
               type="submit"
               value="submit"
