@@ -8,6 +8,7 @@ const { ObjectID } = require('mongodb');
 var { mongoose } = require('./db/mongoose');
 var { Station } = require('./models/station');
 var { ArcCalc1584 } = require('./models/arcCalc1584');
+var { ArcCalcArcPro } = require('./models/arcCalcArcPro');
 var { User } = require('./models/user');
 var { authenticate } = require('./middleware/authenticate');
 
@@ -121,13 +122,27 @@ app.post('/api/stations', authenticate, (req, res) => {
           res.status(400).send(e);
         });
     } else {
+      console.log('it is hitting this else statement');
       res
         .status(400)
         .send(
           'A station with that name and voltage is already in the database'
         );
+      // res
+      //   .status(400)
+      //   .send({
+      //     errors: {
+      //       stationName: {
+      //         message:
+      //           'A station with that name and voltage is already in the database'
+      //       }
+      //     }
+      //   });
     }
   });
+  // .catch(e => {
+  //   res.status(400).send(e);
+  // });
 });
 
 app.get('/api/stations', authenticate, (req, res) => {
@@ -358,6 +373,155 @@ app.delete('/api/arccalc1584/:id', authenticate, (req, res) => {
   }
 
   ArcCalc1584.findOneAndDelete({
+    _id: id
+  })
+    .then(calculation => {
+      if (!calculation) {
+        return res.status(404).send();
+      }
+      Station.findOne({
+        name: calculation.calcParams.sub,
+        voltage: calculation.calcParams.lineVoltage
+      }).then(station => {
+        //might not need this else-if check if I will delete all calculations if the station is deleted.
+        if (!station) {
+          return res.status(404).send('substation does not exist in database');
+        } else {
+          var updatedStationCalcs = station.stationCalcs.filter(
+            value => value != id
+          );
+          Station.findOneAndUpdate(
+            { _id: station._id },
+            { $set: { stationCalcs: updatedStationCalcs } },
+            { new: true }
+          ).then(updatedStation => {
+            if (!updatedStation) {
+              return res.status(400).send();
+            }
+            res.send({ updatedStation });
+          });
+        }
+      });
+    })
+    .catch(e => {
+      res.status(400), send(e);
+    });
+});
+
+// ********************************************************************************************
+// *********************************      ARC PRO CALCS       *********************************
+// ********************************************************************************************
+
+app.post('/api/arccalcarcpro', authenticate, (req, res) => {
+  var bodyCalcParams = _.pick(req.body.calcParams, [
+    'sub',
+    'sub2',
+    'division',
+    'faultType',
+    'stationConfig',
+    'lineVoltage',
+    'faultCurrent',
+    'relayOpTime',
+    'grounded',
+    'comment'
+  ]);
+
+  var bodyArcProInput = _.pick(req.body.arcProInput, [
+    'current',
+    'sourceVoltage',
+    'duration',
+    'electrodeMaterial',
+    'arcGap',
+    'distanceToArc'
+  ]);
+
+  var bodyArcProResults = _.pick(req.body.arcProResults, [
+    'arcVoltage',
+    'arcEnergy',
+    'maxHeatFlux',
+    'heatFluxAtCircleR',
+    'heatFluxAtCircleZ',
+    'flux'
+  ]);
+
+  var bodyResults = _.pick(req.body.results, [
+    'incidentEnergy',
+    'calculatedArcFlashEnergy'
+  ]);
+
+  var hrcLevel = calculateHRC(parseFloat(bodyResults.calculatedArcFlashEnergy));
+
+  Station.findOne({
+    name: bodyCalcParams.sub,
+    voltage: bodyCalcParams.lineVoltage
+  })
+    .then(station => {
+      if (!station) {
+        return res.status(404).send('substation does not exist in database');
+      } else {
+        var arcCalcArcPro = new ArcCalcArcPro({
+          calcParams: { ...bodyCalcParams },
+          arcProInput: { ...bodyArcProInput },
+          arcProResults: { ...bodyArcProResults },
+          results: { ...bodyResults, hrcLevel }
+        });
+
+        arcCalcArcPro
+          .save()
+          .then(arcCalcArcPro => {
+            station.stationCalcs.push(arcCalcArcPro._id);
+            station
+              .save()
+              .then(res.send(arcCalcArcPro))
+              .catch(e => console.error(e));
+          })
+          .catch(e => {
+            res.status(400).send(e);
+          });
+      }
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
+
+app.get('/api/arccalcarcpro', authenticate, (req, res) => {
+  ArcCalcArcPro.find()
+    .then(calculations => {
+      res.send({ calculations });
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
+
+app.get('/api/arccalcarcpro/:id', authenticate, (req, res) => {
+  var id = req.params.id;
+  //If ID is not valid
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  ArcCalcArcPro.findOne({ _id: id })
+    .then(calculation => {
+      if (!calculation) {
+        res.status(404).send();
+      }
+      res.send({ calculation });
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
+
+app.delete('/api/arccalcarcpro/:id', authenticate, (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  ArcCalcArcPro.findOneAndDelete({
     _id: id
   })
     .then(calculation => {

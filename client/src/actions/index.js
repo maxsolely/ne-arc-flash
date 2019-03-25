@@ -75,8 +75,11 @@ export const addStation = (xauth, body) => async dispatch => {
 
       dispatch({ type: ADD_STATION, payload: res });
     } catch (error) {
-      console.log(error);
-      dispatch({ type: ERROR_400, payload: error.response.data.message });
+      console.log(error.response);
+      dispatch({
+        type: ERROR_400,
+        payload: error.response.data.message || error.response.data
+      });
     }
   }
 };

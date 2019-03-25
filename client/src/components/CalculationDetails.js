@@ -50,36 +50,105 @@ class CalculationDetails extends Component {
     }
   }
 
+  renderContent() {
+    const {
+      createdAt,
+      sub,
+      sub2,
+      division,
+      faultType,
+      stationConfig,
+      electrodeConfig,
+      lineVoltage,
+      boltedFaultCurrent,
+      totalClearingTime,
+      comments
+    } = this.state.calcParams;
+
+    const {
+      incidentEnergy,
+      calculatedArcFlashEnergy,
+      hrcLevel
+    } = this.state.results;
+
+    return (
+      <div className="container">
+        <section
+          className="section teal lighten-4 z-depth-2 col s12"
+          style={styles.sectionStyle}
+        >
+          <div className="row">
+            <h4 className="col s12" style={styles.headerStyle}>
+              Params:
+            </h4>
+          </div>
+          <div id="calcParamsContainer" style={{ padding: '0px 10px' }}>
+            <div className="row">
+              <p className="col s12 m6">Primary Substation: {sub}</p>
+              <p className="col s12 m6">Remote Substation: {sub2}</p>
+              <p className="col s12 m6">Division: {division}</p>
+              <p className="col s12 m6">Fault Type: {faultType}</p>
+              <p className="col s12 m6">Station Config: {stationConfig}</p>
+              <p className="col s12 m6">Electrode Config: {electrodeConfig}</p>
+              <p className="col s12 m6">Line Voltage: {lineVoltage}</p>
+              <p className="col s12 m6">
+                Bolted Fault Current: {boltedFaultCurrent}
+              </p>
+              <p className="col s12 m6">
+                Total Clearing Time: {totalClearingTime}
+              </p>
+              <p className="col s12 m6">Comments: {comments}</p>
+            </div>
+          </div>
+        </section>
+        <section
+          className="section amber lighten-4 z-depth-2"
+          style={styles.sectionStyle}
+        >
+          <div className="row">
+            <h4 className="col s12" style={styles.headerStyle}>
+              Results:
+            </h4>
+          </div>
+          <div id="calcResultsContainer" style={{ padding: '0px 10px' }}>
+            <div className="row">
+              <p className="col s12 m6">Incident Energy: {incidentEnergy}</p>
+              <p className="col s12 m6">
+                Calculated Arc Flash Energy: {calculatedArcFlashEnergy}
+              </p>
+              <p className="col s12 m6">HRC Level: {hrcLevel}</p>
+              <button
+                className="btn waves-effect waves-light btn-large col s4 offset-s4"
+                onClick={this.toggleModalFunction.bind(this)}
+              >
+                Delete Calculation
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
         {this.renderModal()}
-        <h4>Calculation Params:</h4>
-        {Object.keys(this.state.calcParams).map(key => {
-          return (
-            <p>
-              {key}: {this.state.calcParams[key]}
-            </p>
-          );
-        })}
-        <h4>Calculation Results:</h4>
-        {Object.keys(this.state.results).map(key => {
-          return (
-            <p>
-              {key}: {this.state.results[key]}
-            </p>
-          );
-        })}
-        <button
-          className="waves-effect waves-light btn-small"
-          onClick={this.toggleModalFunction.bind(this)}
-        >
-          Delete Calculation
-        </button>
+        {this.renderContent()}
       </div>
     );
   }
 }
+
+const styles = {
+  sectionStyle: {
+    margin: '10px 0'
+  },
+  headerStyle: {
+    margin: '0',
+    paddingLeft: '15px'
+  }
+};
 
 function mapStateToProps(state) {
   return {

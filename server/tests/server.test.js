@@ -5,19 +5,23 @@ const { ObjectID } = require('mongodb');
 var { app } = require('./../server');
 const { Station } = require('./../models/station');
 const { ArcCalc1584 } = require('./../models/arcCalc1584');
+const { ArcCalcArcPro } = require('./../models/arcCalcArcPro');
 const { User } = require('./../models/user');
 const {
   stations,
   arcCalc1584calculations,
+  arcCalcArcProCalculations,
   users,
   populateStations,
   populate1584calculations,
+  populateArcProcalculations,
   populateUsers
 } = require('./seed/seed');
 
 beforeEach(populateUsers);
 beforeEach(populateStations);
 beforeEach(populate1584calculations);
+beforeEach(populateArcProcalculations);
 
 describe('POST /stations', () => {
   var name = 'My First Station';
@@ -383,8 +387,8 @@ describe('POST /arccalc1584', () => {
       stationConfig: 'Metalclad',
       electrodeConfig: 'HCB',
       lineVoltage: '69 kV',
-      faultCurrent: 10042,
-      relayOpTime: 0.983
+      boltedFaultCurrent: 10042,
+      totalClearingTime: 0.983
     };
 
     var results = {
@@ -510,6 +514,188 @@ describe('DELETE /arccalc1584/:id', () => {
   //     .expect(404)
   //     .end(done);
   // });
+});
+
+describe('POST /arccalcarcpro', () => {
+  it('should post an arc flash calculation', done => {
+    var calcParams = arcCalcArcProCalculations[0].calcParams;
+    var arcProInput = arcCalcArcProCalculations[0].arcProInput;
+    var arcProResults = arcCalcArcProCalculations[0].arcProResults;
+    var results = arcCalcArcProCalculations[0].results;
+    request(app)
+      .post('/api/arccalcarcpro')
+      .set('x-auth', users[0].tokens[0].token)
+      .send({ calcParams, arcProInput, arcProResults, results })
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Station.findOne({ name: calcParams.sub })
+          .then(station => {
+            expect(station.stationCalcs.length).toBe(3);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should not post an arc flash calculation if there is missing data', done => {
+    // missing flux
+    var calcParams = arcCalcArcProCalculations[0].calcParams;
+    var arcProInput = arcCalcArcProCalculations[0].arcProInput;
+    var arcProResults = {
+      arcVoltage: 408,
+      arcEnergy: 912,
+      maxHeatFlux: 3414,
+      heatFluxAtCircleR: 36.4,
+      heatFluxAtCircleZ: 4
+    };
+    var results = arcCalcArcProCalculations[0].results;
+    request(app)
+      .post('/api/arccalcarcpro')
+      .set('x-auth', users[0].tokens[0].token)
+      .send({ calcParams, arcProInput, arcProResults, results })
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        Station.findOne({ name: calcParams.sub })
+          .then(station => {
+            expect(station.stationCalcs.length).toBe(2);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should return 404 if there is no associated substation in the database', done => {
+    var calcParams = {
+      sub: 'Dummy Station',
+      sub2: 'Test Station',
+      division: 'Ocean State',
+      faultType: '3 phase',
+      stationConfig: 'Metalclad',
+      lineVoltage: '69 kV',
+      faultCurrent: 10042,
+      relayOpTime: 0.983
+    };
+    var arcProInput = arcCalcArcProCalculations[0].arcProInput;
+    var arcProResults = arcCalcArcProCalculations[0].arcProResults;
+    var results = arcCalcArcProCalculations[0].results;
+    request(app)
+      .post('/api/arccalcarcpro')
+      .set('x-auth', users[0].tokens[0].token)
+      .send({ calcParams, arcProInput, arcProResults, results })
+      .expect(404)
+      .end(done);
+  });
+});
+
+describe('GET /arccalcarcpro', () => {
+  it('should return all ArcPro calculations in the database', done => {
+    request(app)
+      .get('/api/arccalcarcpro')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        }
+
+        ArcCalcArcPro.find()
+          .then(calculations => {
+            expect(calculations.length).toBe(2);
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+});
+
+describe('GET /arccalcarcpro/:id', () => {
+  it('should return the arcpro calulation with the requested id', done => {
+    var id = arcCalcArcProCalculations[0]._id.toHexString();
+    request(app)
+      .get(`/api/arccalcarcpro/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.calculation.calcParams.faultCurrent).toBe(
+          arcCalcArcProCalculations[0].calcParams.faultCurrent
+        );
+      })
+      .end(done);
+  });
+
+  it('should return 404 if arcpro calculation not found', done => {
+    var unkownId = new ObjectID().toHexString;
+    request(app)
+      .get(`/api/arccalcarcpro/${unkownId}`)
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .get(`/api/arccalcarcpro/123`)
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
+});
+
+describe('DELETE /arccalcarcpro/:id', () => {
+  it('should return the updated station without the calculation in stationCalcs upon successful deletion', done => {
+    var id = arcCalcArcProCalculations[0]._id.toHexString();
+    request(app)
+      .delete(`/api/arccalcarcpro/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.updatedStation.stationCalcs.length).toBe(1);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        ArcCalcArcPro.findById(id)
+          .then(calculation => {
+            expect(calculation).toBeNull();
+            done();
+          })
+          .catch(e => {
+            done(e);
+          });
+      });
+  });
+
+  it('should return 404 if 1584 calculation not found', done => {
+    var unkownId = new ObjectID().toHexString;
+    request(app)
+      .delete(`/api/arccalcarcpro/${unkownId}`)
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for non-object ids', done => {
+    request(app)
+      .delete(`/api/arccalcarcpro/123`)
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
 });
 
 describe('GET /users/me', () => {

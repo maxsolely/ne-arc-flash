@@ -193,16 +193,18 @@ class New1584Form extends Component {
                       </label>
                     </div>
                     <div className="input-field col s12 m6">
-                      <input
+                      <select
+                        className="browser-default"
                         id="sub2"
-                        type="text"
-                        required
-                        value={this.state.calcParams.sub2}
                         onChange={this.handleSub2NameChange.bind(this)}
-                      />
-                      <label for="sub2" className="active">
-                        Remote Substation:
-                      </label>
+                      >
+                        <option value="" disabled selected>
+                          Choose a Remote Substation
+                        </option>
+                        {this.props.stations.map(e => {
+                          return <option value={e.name}>{e.name}</option>;
+                        })}
+                      </select>
                     </div>
                   </div>
                   <div className="row">
@@ -390,7 +392,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     calcResults: state.calculation1584.results || 'Still being calculated',
     calcID: state.calculation1584._id || 'Still being calculated',
-    errorMessage: state.errorMessage
+    errorMessage: state.errorMessage,
+    stations: state.stations.stationsArray
   };
 }
 
