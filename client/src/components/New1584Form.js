@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, LoginCard } from './common';
 import { connect } from 'react-redux';
-// import { Redirect } from 'react-router-dom';
-import * as actions from '../actions';
+import { add1584Calc, delete1584Calc, resetErrorMessage } from '../actions';
 
 class New1584Form extends Component {
   constructor(props) {
@@ -28,15 +27,25 @@ class New1584Form extends Component {
       showModal: false
     };
 
-    // this.showModalFunction = this.showModalFunction.bind(this);
-    // this.handleSub2NameChange = this.handleSub2NameChange.bind(this);
-    // this.handleFaultCurrentChange = this.handleFaultCurrentChange.bind(this);
-    //this.handleTotalClearingTimeChange = this.handleTotalClearingTimeChange.bind(
-    //  this
-    // );
-    // this.handleCommentChange = this.handleCommentChange.bind(this);
-    // this.deleteCalculation = this.deleteCalculation.bind(this);
-    // this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleCalcParamsDataChange = this.handleCalcParamsDataChange.bind(
+      this
+    );
+
+    this.handleResultsDataChange = this.handleResultsDataChange.bind(this);
+  }
+
+  handleCalcParamsDataChange(prop, event) {
+    const { calcParams } = this.state;
+    calcParams[prop] = event.target.value;
+    console.log(calcParams[prop]);
+    this.setState({ calcParams });
+  }
+
+  handleResultsDataChange(prop, event) {
+    const { results } = this.state;
+    results[prop] = event.target.value;
+    console.log(results[prop]);
+    this.setState({ results });
   }
 
   showModalFunction() {
@@ -50,60 +59,7 @@ class New1584Form extends Component {
     console.log('triggering delete 1584calc');
     this.props.resetErrorMessage();
     this.props.delete1584Calc(this.props.auth.xauth, this.props.calcID);
-
-    // <Redirect
-    //       to={{ pathname: '/stationProfile', state: { _id: this.state.stationID } }}
-    //     />
     this.setState({ showModal: !this.state.showModal });
-  }
-
-  handleSub2NameChange(event) {
-    const { calcParams } = this.state;
-    calcParams.sub2 = event.target.value;
-    console.log(this.state.calcParams.sub2);
-    this.setState({ calcParams });
-  }
-
-  handleElectrodeConfigChange(event) {
-    const { calcParams } = this.state;
-    calcParams.electrodeConfig = event.target.value;
-    console.log(this.state.calcParams.electrodeConfig);
-    this.setState({ calcParams });
-  }
-
-  handleBoltedFaultCurrentChange(event) {
-    const { calcParams } = this.state;
-    calcParams.boltedFaultCurrent = event.target.value;
-    console.log(this.state.calcParams.boltedFaultCurrent);
-    this.setState({ calcParams });
-  }
-
-  handleTotalClearingTimeChange(event) {
-    const { calcParams } = this.state;
-    calcParams.totalClearingTime = event.target.value;
-    console.log(this.state.calcParams.totalClearingTime);
-    this.setState({ calcParams });
-  }
-
-  handleIncidentEnergyChange(event) {
-    const { results } = this.state;
-    results.incidentEnergy = event.target.value;
-    console.log(this.state.results.incidentEnergy);
-    this.setState({ results });
-  }
-
-  handleArcFlashEnergyChange(event) {
-    const { results } = this.state;
-    results.calculatedArcFlashEnergy = event.target.value;
-    console.log(this.state.results.calculatedArcFlashEnergy);
-    this.setState({ results });
-  }
-
-  handleCommentChange(event) {
-    const { calcParams } = this.state;
-    calcParams.comment = event.target.value;
-    console.log(this.state.calcParams.comment);
-    this.setState({ calcParams });
   }
 
   handleSubmit(event) {
@@ -196,7 +152,9 @@ class New1584Form extends Component {
                       <select
                         className="browser-default"
                         id="sub2"
-                        onChange={this.handleSub2NameChange.bind(this)}
+                        onChange={event =>
+                          this.handleCalcParamsDataChange('sub2', event)
+                        }
                       >
                         <option value="" disabled selected>
                           Choose a Remote Substation
@@ -253,7 +211,12 @@ class New1584Form extends Component {
                       <select
                         className="browser-default"
                         id="electrodeConfig"
-                        onChange={this.handleElectrodeConfigChange.bind(this)}
+                        onChange={event =>
+                          this.handleCalcParamsDataChange(
+                            'electrodeConfig',
+                            event
+                          )
+                        }
                       >
                         <option value="" disabled selected>
                           Choose an Electrode Configuration
@@ -275,9 +238,12 @@ class New1584Form extends Component {
                         className="validate"
                         required
                         value={this.state.calcParams.boltedFaultCurrent}
-                        onChange={this.handleBoltedFaultCurrentChange.bind(
-                          this
-                        )}
+                        onChange={event =>
+                          this.handleCalcParamsDataChange(
+                            'boltedFaultCurrent',
+                            event
+                          )
+                        }
                       />
                       <label for="boltedFaultCurrent" className="active">
                         Bolted Fault Current (Amps):
@@ -292,7 +258,12 @@ class New1584Form extends Component {
                         className="validate"
                         required
                         value={this.state.calcParams.totalClearingTime}
-                        onChange={this.handleTotalClearingTimeChange.bind(this)}
+                        onChange={event =>
+                          this.handleCalcParamsDataChange(
+                            'totalClearingTime',
+                            event
+                          )
+                        }
                       />
                       <label for="totalClearingTime" className="active">
                         Total Clearing Time (relay op time + breaker clearing):
@@ -301,6 +272,7 @@ class New1584Form extends Component {
                   </div>
                 </div>
               </section>
+
               <section
                 className="section amber lighten-4 z-depth-2"
                 style={styles.sectionStyle}
@@ -321,7 +293,9 @@ class New1584Form extends Component {
                         className="validate"
                         required
                         value={this.state.results.incidentEnergy}
-                        onChange={this.handleIncidentEnergyChange.bind(this)}
+                        onChange={event =>
+                          this.handleResultsDataChange('incidentEnergy', event)
+                        }
                       />
                       <label for="incidentEnergy" className="active">
                         Incident Energy (0.00):
@@ -336,7 +310,12 @@ class New1584Form extends Component {
                         className="validate"
                         required
                         value={this.state.results.calculatedArcFlashEnergy}
-                        onChange={this.handleArcFlashEnergyChange.bind(this)}
+                        onChange={event =>
+                          this.handleResultsDataChange(
+                            'calculatedArcFlashEnergy',
+                            event
+                          )
+                        }
                       />
                       <label for="arcFlashEnergy" className="active">
                         Calculated Arc Flash Energy (0.00):
@@ -350,7 +329,9 @@ class New1584Form extends Component {
                         className="materialize-textarea"
                         placeholder="Add Comments Here"
                         value={this.state.calcParams.comment}
-                        onChange={this.handleCommentChange.bind(this)}
+                        onChange={event =>
+                          this.handleCalcParamsDataChange('comment', event)
+                        }
                       />
                     </div>
                   </div>
@@ -399,5 +380,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  actions
+  { add1584Calc, delete1584Calc, resetErrorMessage }
 )(New1584Form);

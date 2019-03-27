@@ -7,6 +7,7 @@ import LoginForm from './LoginForm';
 import Stations from './Stations';
 import NewStationForm from './NewStationForm';
 import New1584Form from './New1584Form';
+import NewArcProForm from './NewArcProForm';
 import StationProfile from './StationProfile';
 import CalculationDetails from './CalculationDetails';
 
@@ -33,6 +34,7 @@ class App extends Component {
             <Route path="/stationProfile" component={StationProfile} />
             <Route path="/calculationDetails" component={CalculationDetails} />
             <Route path="/add1584Calculation" component={New1584Form} />
+            <Route path="/addArcProCalculation" component={NewArcProForm} />
           </div>
         </BrowserRouter>
       </div>

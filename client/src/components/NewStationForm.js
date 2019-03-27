@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import * as actions from '../actions';
+import { addStation, resetErrorMessage } from '../actions';
 import { Modal, LoginCard } from './common';
 
 class NewStationForm extends Component {
@@ -280,5 +280,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  actions
+  { addStation, resetErrorMessage }
 )(NewStationForm);

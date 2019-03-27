@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { CalculationEntry, LoginCard } from './common';
-import * as actions from '../actions';
+import { fetchStationInfo } from '../actions';
 
 class StationProfile extends Component {
   constructor(props) {
@@ -52,22 +52,42 @@ class StationProfile extends Component {
                 >
                   Edit Station
                 </Link>
-                <Link
-                  class="waves-effect waves-light btn-large teal"
-                  style={{ width: '100%' }}
-                  to={{
-                    pathname: '/add1584Calculation',
-                    state: {
-                      _id: this.state.stationID,
-                      name,
-                      voltage,
-                      stationConfig,
-                      division
-                    }
-                  }}
-                >
-                  Add New Calc
-                </Link>
+
+                {parseFloat(voltage) < 20 ? (
+                  <Link
+                    class="waves-effect waves-light btn-large teal"
+                    style={{ width: '100%' }}
+                    to={{
+                      pathname: '/add1584Calculation',
+                      state: {
+                        _id: this.state.stationID,
+                        name,
+                        voltage,
+                        stationConfig,
+                        division
+                      }
+                    }}
+                  >
+                    Add New Calc
+                  </Link>
+                ) : (
+                  <Link
+                    class="waves-effect waves-light btn-large teal"
+                    style={{ width: '100%' }}
+                    to={{
+                      pathname: '/addArcProCalculation',
+                      state: {
+                        _id: this.state.stationID,
+                        name,
+                        voltage,
+                        stationConfig,
+                        division
+                      }
+                    }}
+                  >
+                    Add New Calc
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -111,5 +131,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  actions
+  { fetchStationInfo }
 )(StationProfile);

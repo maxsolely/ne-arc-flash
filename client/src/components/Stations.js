@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { StationEntry, LoginCard } from './common';
-import * as actions from '../actions';
+import { fetchStations } from '../actions';
 
 class Stations extends Component {
   constructor(props) {
@@ -113,5 +113,5 @@ function mapStateToProps(state) {
 }
 export default connect(
   mapStateToProps,
-  actions
+  { fetchStations }
 )(Stations);

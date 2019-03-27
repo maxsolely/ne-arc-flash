@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import { loginUser } from '../actions';
 import { Link } from 'react-router-dom';
 import success from '../images/partnersSuccess.png';
 
@@ -132,5 +132,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  actions
+  { loginUser }
 )(LoginForm);

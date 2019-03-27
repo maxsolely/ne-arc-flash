@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal } from './common';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import { delete1584Calc } from '../actions';
 
 class CalculationDetails extends Component {
   constructor(props) {
@@ -158,5 +158,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  actions
+  { delete1584Calc }
 )(CalculationDetails);
