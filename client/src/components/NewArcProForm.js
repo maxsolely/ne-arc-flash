@@ -86,6 +86,10 @@ class NewArcProForm extends Component {
     this.setState({ results });
   }
 
+  triggerGoBack() {
+    this.props.history.goBack();
+  }
+
   showModalFunction() {
     console.log('show modal triggered');
     console.log(this.state.showModal);
@@ -142,8 +146,8 @@ class NewArcProForm extends Component {
         <Modal
           modalTitle="Calculation Results"
           onCancel={this.deleteCalculation.bind(this)}
-          onCancelButtonText="Discard Calculation"
-          onConfirm={this.showModalFunction.bind(this)}
+          onCancelButtonText="Cancel"
+          onConfirm={this.triggerGoBack.bind(this)}
           onConfirmButtonText="Save Calculation"
         >
           {modalContent}

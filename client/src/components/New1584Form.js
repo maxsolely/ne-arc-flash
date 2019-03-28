@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Modal, LoginCard } from './common';
 import { connect } from 'react-redux';
 import { add1584Calc, delete1584Calc, resetErrorMessage } from '../actions';
+import { Modal, LoginCard } from './common';
 
 class New1584Form extends Component {
   constructor(props) {
@@ -62,6 +62,10 @@ class New1584Form extends Component {
     this.setState({ showModal: !this.state.showModal });
   }
 
+  triggerGoBack() {
+    this.props.history.goBack();
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     console.log(this.state);
@@ -70,8 +74,6 @@ class New1584Form extends Component {
       results: this.state.results
     });
     this.setState({ showModal: !this.state.showModal });
-    // this.props.addStation(this.props.auth.xauth, this.state);
-    // this.setState({ name: '', division: '', voltage: '', stationConfig: '' });
   }
 
   renderModal() {
@@ -102,8 +104,8 @@ class New1584Form extends Component {
         <Modal
           modalTitle="Calculation Results"
           onCancel={this.deleteCalculation.bind(this)}
-          onCancelButtonText="Discard Calculation"
-          onConfirm={this.showModalFunction.bind(this)}
+          onCancelButtonText="Cancel"
+          onConfirm={this.triggerGoBack.bind(this)}
           onConfirmButtonText="Save Calculation"
         >
           {modalContent}

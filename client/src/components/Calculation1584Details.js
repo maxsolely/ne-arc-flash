@@ -3,7 +3,7 @@ import { Modal } from './common';
 import { connect } from 'react-redux';
 import { delete1584Calc } from '../actions';
 
-class CalculationDetails extends Component {
+class Calculation1584Details extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,11 +23,11 @@ class CalculationDetails extends Component {
   deleteCalculation() {
     console.log('triggering delete 1584calc');
     this.props.delete1584Calc(this.props.auth.xauth, this.state.calcID);
-
+    this.props.history.goBack();
     // <Redirect
     //       to={{ pathname: '/stationProfile', state: { _id: this.state.stationID } }}
     //     />
-    this.setState({ showModal: !this.state.showModal });
+    // this.setState({ showModal: !this.state.showModal });
   }
 
   renderModal() {
@@ -117,12 +117,13 @@ class CalculationDetails extends Component {
                 Calculated Arc Flash Energy: {calculatedArcFlashEnergy}
               </p>
               <p className="col s12 m6">HRC Level: {hrcLevel}</p>
-              <button
+              <span
                 className="btn waves-effect waves-light btn-large col s4 offset-s4"
+                style={{ position: 'initial' }}
                 onClick={this.toggleModalFunction.bind(this)}
               >
                 Delete Calculation
-              </button>
+              </span>
             </div>
           </div>
         </section>
@@ -159,4 +160,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   { delete1584Calc }
-)(CalculationDetails);
+)(Calculation1584Details);

@@ -48,7 +48,16 @@ class StationProfile extends Component {
                 <Link
                   class="waves-effect waves-light btn-large amber darken-2"
                   style={{ width: '100%' }}
-                  to="/"
+                  to={{
+                    pathname: '/editStation',
+                    state: {
+                      _id: this.state.stationID,
+                      name,
+                      voltage,
+                      stationConfig,
+                      division
+                    }
+                  }}
                 >
                   Edit Station
                 </Link>
@@ -96,7 +105,7 @@ class StationProfile extends Component {
                 There are no calculations for this station yet
               </p>
             ) : (
-              stationCalcs.map(e => {
+              stationCalcs.reverse().map(e => {
                 return (
                   <CalculationEntry
                     date={e.calcParams.createdAt.slice(5, 10)}

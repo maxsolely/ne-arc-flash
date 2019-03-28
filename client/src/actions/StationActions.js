@@ -2,6 +2,8 @@ import axios from 'axios';
 import {
   FETCH_STATIONS,
   ADD_STATION,
+  EDIT_STATION,
+  DELETE_STATION,
   ERROR_400,
   FETCH_STATION_INFO
 } from './types';
@@ -41,6 +43,26 @@ export const addStation = (xauth, body) => async dispatch => {
   }
 };
 
+export const editStation = (xauth, body, id) => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: EDIT_STATION, payload: {} });
+  } else {
+    try {
+      const res = await axios.patch(`/api/stations/${id}`, body, {
+        headers: { 'x-auth': xauth }
+      });
+
+      dispatch({ type: EDIT_STATION, payload: res });
+    } catch (error) {
+      console.log(error.response);
+      dispatch({
+        type: ERROR_400,
+        payload: error.response.data.message || error.response.data
+      });
+    }
+  }
+};
+
 export const fetchStationInfo = (xauth, id) => async dispatch => {
   if (xauth === null || xauth.length === 0) {
     dispatch({ type: FETCH_STATION_INFO, payload: {} });
@@ -68,5 +90,17 @@ export const fetchStationInfo = (xauth, id) => async dispatch => {
 
     res.data.station.stationCalcs = retrievedCalculations;
     dispatch({ type: FETCH_STATION_INFO, payload: res.data.station });
+  }
+};
+
+export const deleteStation = (xauth, stationID) => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: DELETE_STATION, payload: {} });
+  } else {
+    const res = await axios.delete(`/api/stations/${stationID}`, {
+      headers: { 'x-auth': xauth }
+    });
+
+    dispatch({ type: DELETE_STATION, payload: {} });
   }
 };

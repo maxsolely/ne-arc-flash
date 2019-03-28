@@ -6,10 +6,12 @@ import Header from './Header';
 import LoginForm from './LoginForm';
 import Stations from './Stations';
 import NewStationForm from './NewStationForm';
+import EditStationForm from './EditStationForm';
 import New1584Form from './New1584Form';
 import NewArcProForm from './NewArcProForm';
 import StationProfile from './StationProfile';
-import CalculationDetails from './CalculationDetails';
+import Calculation1584Details from './Calculation1584Details';
+import CalculationArcProDetails from './CalculationArcProDetails';
 
 const Landing = () => <h2>Landing</h2>;
 const Dashboard = () => <h2>Dashboard</h2>;
@@ -32,9 +34,17 @@ class App extends Component {
             <Route path="/stations" component={Stations} />
             <Route path="/addStation" component={NewStationForm} />
             <Route path="/stationProfile" component={StationProfile} />
-            <Route path="/calculationDetails" component={CalculationDetails} />
+            <Route
+              path="/1584CalculationDetails"
+              component={Calculation1584Details}
+            />
+            <Route
+              path="/ArcProCalculationDetails"
+              component={CalculationArcProDetails}
+            />
             <Route path="/add1584Calculation" component={New1584Form} />
             <Route path="/addArcProCalculation" component={NewArcProForm} />
+            <Route path="/editStation" component={EditStationForm} />
           </div>
         </BrowserRouter>
       </div>

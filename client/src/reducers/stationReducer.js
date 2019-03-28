@@ -1,6 +1,8 @@
 import {
   FETCH_STATIONS,
   ADD_STATION,
+  EDIT_STATION,
+  DELETE_STATION,
   FETCH_STATION_INFO
 } from '../actions/types';
 
@@ -17,6 +19,12 @@ export default function(state = initialState, action) {
       return { ...state, stationsArray: action.payload };
 
     case ADD_STATION:
+      return state;
+
+    case EDIT_STATION:
+      return state;
+
+    case DELETE_STATION:
       return state;
 
     case FETCH_STATION_INFO:

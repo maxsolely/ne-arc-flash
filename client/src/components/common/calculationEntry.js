@@ -10,6 +10,7 @@ const CalculationEntry = ({
   calcID,
   wholeCalcObject
 }) => {
+  const { lineVoltage } = wholeCalcObject.calcParams;
   return (
     <section className="z-depth-3" style={styles.section}>
       <div
@@ -47,16 +48,29 @@ const CalculationEntry = ({
         </p>
       </div>
       <div className="row">
-        <Link
-          to={{
-            pathname: '/calculationDetails',
-            state: { calculation: wholeCalcObject }
-          }}
-          class="waves-effect waves-light btn-small col s4 offset-s4 amber darken-2"
-          style={{ marginBottom: '10px' }}
-        >
-          View
-        </Link>
+        {parseFloat(lineVoltage) < 20 ? (
+          <Link
+            to={{
+              pathname: '/1584CalculationDetails',
+              state: { calculation: wholeCalcObject }
+            }}
+            class="waves-effect waves-light btn-small col s4 offset-s4 amber darken-2"
+            style={{ marginBottom: '10px' }}
+          >
+            View
+          </Link>
+        ) : (
+          <Link
+            to={{
+              pathname: '/ArcProCalculationDetails',
+              state: { calculation: wholeCalcObject }
+            }}
+            class="waves-effect waves-light btn-small col s4 offset-s4 amber darken-2"
+            style={{ marginBottom: '10px' }}
+          >
+            View
+          </Link>
+        )}
       </div>
     </section>
   );

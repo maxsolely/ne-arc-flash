@@ -3,6 +3,8 @@ export const LOGIN_USER = 'login_user';
 
 export const FETCH_STATIONS = 'fetch_stations';
 export const ADD_STATION = 'add_station';
+export const EDIT_STATION = 'edit_station';
+export const DELETE_STATION = 'delete_station';
 export const FETCH_STATION_INFO = 'fetch_station_info';
 
 export const FETCH_1584_CALCULATION_INFO = 'fetch_calculation_info';
