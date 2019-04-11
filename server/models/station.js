@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var { ArcCalc1584 } = require('./arcCalc1584');
-const voltageEnums = ['4 kV', '13.8 kV', '34.5 kV', '69 kV', '115 kV'];
+const voltageEnums = ['4.1 kV', '13.8 kV', '34.5 kV', '69 kV', '115 kV'];
 
 var Station = mongoose.model('Station', {
   name: {

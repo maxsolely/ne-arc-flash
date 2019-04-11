@@ -14,17 +14,17 @@ const CalculationEntry = ({
   return (
     <section className="z-depth-3" style={styles.section}>
       <div
-        className="valign-wrapper row indigo z-depth-2 white-text"
-        style={styles.topRow}
+        className="valign-wrapper indigo row z-depth-1 white-text"
+        style={styles.topCardSection}
       >
         <p
-          className="flow-text col s2 center-align amber-text text-lighten-3 "
-          style={styles.date}
+          className="flow-text col s2 center-align  "
+          style={{ color: '#B5A33F', padding: 0 }}
         >
           Date: <span style={{ display: 'block' }}>{date}</span>
         </p>
         <div
-          className="flow-text col s8 center-align amber-text text-lighten-3"
+          className="flow-text col s8 center-align "
           style={styles.energyCol}
         >
           <p>
@@ -54,7 +54,7 @@ const CalculationEntry = ({
               pathname: '/1584CalculationDetails',
               state: { calculation: wholeCalcObject }
             }}
-            class="waves-effect waves-light btn-small col s4 offset-s4 amber darken-2"
+            class="waves-effect waves-light btn-small col s2 offset-s5 indigo"
             style={{ marginBottom: '10px' }}
           >
             View
@@ -65,7 +65,7 @@ const CalculationEntry = ({
               pathname: '/ArcProCalculationDetails',
               state: { calculation: wholeCalcObject }
             }}
-            class="waves-effect waves-light btn-small col s4 offset-s4 amber darken-2"
+            class="waves-effect waves-light btn-small col s2 offset-s5 indigo"
             style={{ marginBottom: '10px' }}
           >
             View
@@ -78,17 +78,17 @@ const CalculationEntry = ({
 
 const styles = {
   section: {
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor: '#ffecb3'
+    borderRadius: 25
   },
-  topRow: {},
-  date: {},
+  topCardSection: {
+    borderRadius: '25px 25px 0px 0px'
+  },
   energyCol: {
-    borderLeft: '1.5px solid #ffffff'
+    borderLeft: '1.5px solid #ffffff',
+    color: '#B5A33F'
   },
   hrcLevel: {
-    backgroundColor: '#009688',
+    backgroundColor: '#607D8B',
     // color: '#ffe082',
     color: '#ffffffff',
     borderRadius: '10% 25%',

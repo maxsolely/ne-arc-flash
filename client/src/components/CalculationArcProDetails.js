@@ -48,48 +48,44 @@ class CalculationArcProDetails extends Component {
     }
   }
 
-  renderContent() {
-    const {
-      createdAt,
-      sub,
-      sub2,
-      division,
-      faultType,
-      stationConfig,
-      lineVoltage,
-      faultCurrent,
-      relayOpTime,
-      grounded,
-      comments
-    } = this.state.calcParams;
+  createArray(object) {
+    let objectArray = Object.keys(object).map(key => {
+      let formattedKey = key
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, function(str) {
+          return str.toUpperCase();
+        });
+      if (formattedKey === 'Created At')
+        object[key] = new Date(object[key]).toString().slice(0, 15);
+      if (formattedKey === 'Sub') formattedKey = 'Primary Substation';
+      if (formattedKey === 'Sub2') formattedKey = 'Remote Substation';
+      return [formattedKey, object[key]];
+    });
+    return objectArray;
+  }
 
-    const {
-      current,
-      sourceVoltage,
-      duration,
-      electrodeMaterial,
-      arcGap,
-      distanceToArc
-    } = this.state.arcProInput;
-    const {
-      arcVoltage,
-      arcEnergy,
-      maxHeatFlux,
-      heatFluxAtCircleR,
-      heatFluxAtCircleZ,
-      flux
-    } = this.state.arcProResults;
-    const {
-      incidentEnergy,
-      calculatedArcFlashEnergy,
-      hrcLevel
-    } = this.state.results;
+  createFields(array) {
+    array.map(element => {
+      return (
+        <p className="col s12 m6">
+          <span>{element[0]}</span>
+          <span>{element[1]}</span>
+        </p>
+      );
+    });
+  }
+
+  renderContent() {
+    const calcParamsArray = this.createArray(this.state.calcParams);
+    const arcProInputArray = this.createArray(this.state.arcProInput);
+    const arcProResultsArray = this.createArray(this.state.arcProResults);
+    const resultsArray = this.createArray(this.state.results);
 
     return (
-      <div className="container">
+      <div style={{ margin: '15px' }}>
         <section
-          className="section teal lighten-4 z-depth-2 col s12"
-          style={styles.sectionStyle}
+          className="section z-depth-1 col s12"
+          style={{ margin: '10px 0', backgroundColor: '#F6F3E4' }}
         >
           <div className="row">
             <h4 className="col s12" style={styles.headerStyle}>
@@ -97,24 +93,29 @@ class CalculationArcProDetails extends Component {
             </h4>
           </div>
           <div id="calcParamsContainer" style={{ padding: '0px 10px' }}>
-            <div className="row">
-              <p className="col s12 m6">Primary Substation: {sub}</p>
-              <p className="col s12 m6">Remote Substation: {sub2}</p>
-              <p className="col s12 m6">Division: {division}</p>
-              <p className="col s12 m6">Fault Type: {faultType}</p>
-              <p className="col s12 m6">Station Config: {stationConfig}</p>
-              <p className="col s12 m6">Grounding: {grounded}</p>
-              <p className="col s12 m6">Line Voltage: {lineVoltage}</p>
-              <p className="col s12 m6">Fault Current: {faultCurrent}</p>
-              <p className="col s12 m6">Relay Operating Time: {relayOpTime}</p>
-              <p className="col s12 m6">Comments: {comments}</p>
+            <div className="row" style={{ borderTop: '1px solid' }}>
+              {calcParamsArray.map(element => {
+                let unit;
+                if (element[0] === 'Fault Current') unit = 'Amps';
+                if (element[0] === 'Relay Op Time') unit = 'seconds';
+                return (
+                  <p className="col s12 m6">
+                    <span style={styles.elementContainer}>
+                      <span style={styles.elementName}>{element[0]}: </span>
+                      <span>
+                        {element[1]} {unit}
+                      </span>
+                    </span>
+                  </p>
+                );
+              })}
             </div>
           </div>
         </section>
 
         <section
-          className="section indigo lighten-4 z-depth-2 col s12"
-          style={styles.sectionStyle}
+          className="section z-depth-1 col s12"
+          style={{ margin: '10px 0', backgroundColor: '#E4E7F6' }}
         >
           <div className="row">
             <h4 className="col s12" style={styles.headerStyle}>
@@ -122,22 +123,46 @@ class CalculationArcProDetails extends Component {
             </h4>
           </div>
           <div id="calcParamsContainer" style={{ padding: '0px 10px' }}>
-            <div className="row">
-              <p className="col s12 m6">Current: {current}</p>
-              <p className="col s12 m6">Source Voltage: {sourceVoltage}</p>
-              <p className="col s12 m6">Duration: {duration}</p>
-              <p className="col s12 m6">
-                Electrode Material: {electrodeMaterial}
-              </p>
-              <p className="col s12 m6">Arc Gap: {arcGap}</p>
-              <p className="col s12 m6">Distance To Arc: {distanceToArc}</p>
+            <div className="row" style={{ borderTop: '1px solid' }}>
+              {arcProInputArray.map(element => {
+                let unit;
+                switch (element[0]) {
+                  case 'Current':
+                    unit = 'kAmps';
+                    break;
+                  case 'Source Voltage':
+                    unit = 'Volts';
+                    break;
+                  case 'Duration':
+                    unit = 'cycles';
+                    break;
+                  case 'Arc Gap':
+                    unit = 'inches';
+                    break;
+                  case 'Distance To Arc':
+                    unit = 'inches';
+                    break;
+                  default:
+                    unit = '';
+                }
+                return (
+                  <p className="col s12 m6">
+                    <span style={styles.elementContainer}>
+                      <span style={styles.elementName}>{element[0]}: </span>
+                      <span>
+                        {element[1]} {unit}
+                      </span>
+                    </span>
+                  </p>
+                );
+              })}
             </div>
           </div>
         </section>
 
         <section
-          className="section red lighten-4 z-depth-2 col s12"
-          style={styles.sectionStyle}
+          className="section z-depth-1 col s12"
+          style={{ margin: '10px 0', backgroundColor: '#E4F5F6' }}
         >
           <div className="row">
             <h4 className="col s12" style={styles.headerStyle}>
@@ -145,24 +170,49 @@ class CalculationArcProDetails extends Component {
             </h4>
           </div>
           <div id="calcParamsContainer" style={{ padding: '0px 10px' }}>
-            <div className="row">
-              <p className="col s12 m6">Arc Voltage: {arcVoltage}</p>
-              <p className="col s12 m6">Arc Energy: {arcEnergy}</p>
-              <p className="col s12 m6">Max Heat Flux: {maxHeatFlux}</p>
-              <p className="col s12 m6">
-                Heat Flux at Circle R: {heatFluxAtCircleR}
-              </p>
-              <p className="col s12 m6">
-                Heat Flux at Circle Z: {heatFluxAtCircleZ}
-              </p>
-              <p className="col s12 m6">Flux: {flux}</p>
+            <div className="row" style={{ borderTop: '1px solid' }}>
+              {arcProResultsArray.map(element => {
+                let unit;
+                switch (element[0]) {
+                  case 'Arc Voltage':
+                    unit = 'Volts';
+                    break;
+                  case 'Arc Energy':
+                    unit = 'kcal';
+                    break;
+                  case 'Max Heat Flux':
+                    unit = 'cal/s/cm2';
+                    break;
+                  case 'Flux':
+                    unit = 'cal/s/cm2';
+                    break;
+                  case 'Heat Flux At Circle R':
+                    unit = 'inches';
+                    break;
+                  case 'Heat Flux At Circle Z':
+                    unit = 'inches';
+                    break;
+                  default:
+                    unit = '';
+                }
+                return (
+                  <p className="col s12 m6">
+                    <span style={styles.elementContainer}>
+                      <span style={styles.elementName}>{element[0]}: </span>
+                      <span>
+                        {element[1]} {unit}
+                      </span>
+                    </span>
+                  </p>
+                );
+              })}
             </div>
           </div>
         </section>
 
         <section
-          className="section amber lighten-4 z-depth-2"
-          style={styles.sectionStyle}
+          className="section z-depth-1 col s12"
+          style={{ margin: '10px 0', backgroundColor: '#F6E5E4' }}
         >
           <div className="row">
             <h4 className="col s12" style={styles.headerStyle}>
@@ -170,12 +220,23 @@ class CalculationArcProDetails extends Component {
             </h4>
           </div>
           <div id="calcResultsContainer" style={{ padding: '0px 10px' }}>
-            <div className="row">
-              <p className="col s12 m6">Incident Energy: {incidentEnergy}</p>
-              <p className="col s12 m6">
-                Calculated Arc Flash Energy: {calculatedArcFlashEnergy}
-              </p>
-              <p className="col s12 m6">HRC Level: {hrcLevel}</p>
+            <div className="row" style={{ borderTop: '1px solid' }}>
+              {resultsArray.map(element => {
+                let unit;
+                if (element[0] === 'Incident Energy') unit = 'J/cm2';
+                if (element[0] === 'Calculated Arc Flash Energy')
+                  unit = 'cal/cm2';
+                return (
+                  <p className="col s12 m6">
+                    <span style={styles.elementContainer}>
+                      <span style={styles.elementName}>{element[0]}: </span>
+                      <span>
+                        {element[1]} {unit}
+                      </span>
+                    </span>
+                  </p>
+                );
+              })}
               <span
                 className="btn waves-effect waves-light btn-large col s4 offset-s4"
                 style={{ position: 'initial' }}
@@ -201,12 +262,18 @@ class CalculationArcProDetails extends Component {
 }
 
 const styles = {
-  sectionStyle: {
-    margin: '10px 0'
-  },
   headerStyle: {
     margin: '0',
     paddingLeft: '15px'
+  },
+  elementContainer: {
+    padding: '12px 6px',
+    borderRadius: '5px',
+    fontSize: '20px'
+  },
+  elementName: {
+    color: 'black',
+    fontWeight: '600'
   }
 };
 

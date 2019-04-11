@@ -111,10 +111,14 @@ class NewStationForm extends Component {
 
       default:
         return (
-          <div className="container">
-            <form className="col s12" onSubmit={this.handleSubmit}>
+          <div>
+            <form
+              className="col s12"
+              style={{ padding: 0 }}
+              onSubmit={this.handleSubmit}
+            >
               <section
-                className="section amber lighten-4 z-depth-2"
+                className="section z-depth-2"
                 style={styles.sectionStyle}
               >
                 <div className="row">
@@ -151,7 +155,7 @@ class NewStationForm extends Component {
                         <option value="" disabled selected>
                           Choose a Voltage (kV)
                         </option>
-                        <option value="4 kV">4</option>
+                        <option value="4.1 kV">4.1</option>
                         <option value="13.8 kV">13.8</option>
                         <option value="34.5 kV">34.5</option>
                         <option value="69 kV">69</option>
@@ -266,7 +270,8 @@ class NewStationForm extends Component {
 
 const styles = {
   sectionStyle: {
-    margin: '10px 0'
+    margin: '15px',
+    backgroundColor: '#F6F3E4'
   },
   headerStyle: {
     margin: '0',

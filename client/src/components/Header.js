@@ -34,12 +34,14 @@ class Header extends Component {
     return (
       <nav>
         <div className="nav-wrapper indigo">
-          <Link
-            to={this.props.auth._id ? '/dashboard' : '/'}
-            className="left brand-logo"
-          >
-            NE Arc Flash
-          </Link>
+          <div style={{ paddingLeft: 15 }}>
+            <Link
+              to={this.props.auth._id ? '/dashboard' : '/'}
+              className="left brand-logo"
+            >
+              NE Arc Flash
+            </Link>
+          </div>
           <ul className="right ">{this.renderContent()}</ul>
         </div>
       </nav>

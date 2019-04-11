@@ -3,6 +3,7 @@ import {
   FETCH_1584_CALCULATION_INFO,
   ADD_1584_CALC,
   DELETE_1584_CALC,
+  FETCH_ALL_1584_CALCS,
   ERROR_400
 } from './types';
 
@@ -72,5 +73,17 @@ export const delete1584Calc = (xauth, calcID) => async dispatch => {
     });
 
     dispatch({ type: DELETE_1584_CALC, payload: res.data });
+  }
+};
+
+export const fetchAll1584Calcs = xauth => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: FETCH_ALL_1584_CALCS, payload: {} });
+  } else {
+    const res = await axios.get('/api/arccalc1584', {
+      headers: { 'x-auth': xauth }
+    });
+
+    dispatch({ type: FETCH_ALL_1584_CALCS, payload: res.data });
   }
 };

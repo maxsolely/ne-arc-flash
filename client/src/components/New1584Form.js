@@ -124,11 +124,11 @@ class New1584Form extends Component {
 
       default:
         return (
-          <div className="container">
+          <div>
             <form className="col s12" onSubmit={this.handleSubmit.bind(this)}>
               <section
-                className="section teal lighten-4 z-depth-2"
-                style={styles.sectionStyle}
+                className="section z-depth-2"
+                style={{ margin: '10px 0', backgroundColor: '#F6F3E4' }}
               >
                 <div className="row">
                   <h4 className="col s12" style={styles.headerStyle}>
@@ -268,7 +268,8 @@ class New1584Form extends Component {
                         }
                       />
                       <label for="totalClearingTime" className="active">
-                        Total Clearing Time (relay op time + breaker clearing):
+                        Total Clearing Time (relay op time + breaker
+                        clearing)(seconds):
                       </label>
                     </div>
                   </div>
@@ -276,8 +277,8 @@ class New1584Form extends Component {
               </section>
 
               <section
-                className="section amber lighten-4 z-depth-2"
-                style={styles.sectionStyle}
+                className="section z-depth-2"
+                style={{ margin: '10px 0', backgroundColor: '#E4E7F6' }}
               >
                 <div className="row">
                   <h4 className="col s12" style={styles.headerStyle}>
@@ -361,9 +362,6 @@ class New1584Form extends Component {
 }
 
 const styles = {
-  sectionStyle: {
-    margin: '10px 0'
-  },
   headerStyle: {
     margin: '0',
     paddingLeft: '15px'

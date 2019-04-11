@@ -11,6 +11,7 @@ var { ArcCalc1584 } = require('./models/arcCalc1584');
 var { ArcCalcArcPro } = require('./models/arcCalcArcPro');
 var { User } = require('./models/user');
 var { authenticate } = require('./middleware/authenticate');
+var { sendNewCalcEmail } = require('./emails/account');
 
 var port = process.env.PORT;
 var app = express();
@@ -321,6 +322,10 @@ app.post('/api/arccalc1584', authenticate, (req, res) => {
           .save()
           .then(arcCalc1584 => {
             station.stationCalcs.push(arcCalc1584._id);
+            sendNewCalcEmail(
+              arcCalc1584.calcParams.division,
+              arcCalc1584.calcParams.sub
+            );
             station
               .save()
               .then(res.send(arcCalc1584))
@@ -562,3 +567,5 @@ app.listen(port, () => {
 });
 
 module.exports = { app };
+
+// "MONGODB_URI": "mongodb://localhost:27017/NEArcFlash",

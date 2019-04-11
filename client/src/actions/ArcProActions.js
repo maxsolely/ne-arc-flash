@@ -3,6 +3,7 @@ import {
   FETCH_ARCPRO_CALCULATION_INFO,
   ADD_ARCPRO_CALC,
   DELETE_ARCPRO_CALC,
+  FETCH_ALL_ARCPRO_CALCS,
   ERROR_400
 } from './types';
 
@@ -72,5 +73,17 @@ export const deleteArcProCalc = (xauth, calcID) => async dispatch => {
     });
 
     dispatch({ type: DELETE_ARCPRO_CALC, payload: res.data });
+  }
+};
+
+export const fetchAllArcProCalcs = xauth => async dispatch => {
+  if (xauth === null || xauth.length === 0) {
+    dispatch({ type: FETCH_ALL_ARCPRO_CALCS, payload: {} });
+  } else {
+    const res = await axios.get('/api/arccalcarcpro', {
+      headers: { 'x-auth': xauth }
+    });
+
+    dispatch({ type: FETCH_ALL_ARCPRO_CALCS, payload: res.data });
   }
 };

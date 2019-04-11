@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { loginUser } from '../actions';
-import { Link } from 'react-router-dom';
-import success from '../images/partnersSuccess.png';
+import { Redirect } from 'react-router-dom';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -43,71 +42,46 @@ class LoginForm extends Component {
 
       case false:
         return (
-          <form
-            onSubmit={this.handleSubmit}
-            className="container"
-            style={styles.formContainer}
-          >
-            <div className="input-field s12">
+          <div className="row">
+            <form
+              className="col m6 s10 offset-m3 offset-s1 z-depth-1"
+              onSubmit={this.handleSubmit}
+              style={styles.formContainer}
+            >
+              <div className="input-field">
+                <input
+                  type="text"
+                  id="email"
+                  value={this.state.email}
+                  onChange={this.handleEmailChange}
+                />
+                <label for="email" className="active">
+                  Email
+                </label>
+              </div>
+              <div className="input-field">
+                <input
+                  type="password"
+                  id="password"
+                  value={this.state.password}
+                  onChange={this.handlePasswordChange}
+                />
+                <label for="password" className="active">
+                  Password
+                </label>
+              </div>
               <input
-                type="text"
-                id="email"
-                value={this.state.email}
-                onChange={this.handleEmailChange}
+                type="submit"
+                value="submit"
+                className="btn waves-effect waves-light btn-large teal"
+                style={styles.buttonContainer}
               />
-              <label for="email" className="active">
-                Email
-              </label>
-            </div>
-            <div className="input-field s12">
-              <input
-                type="password"
-                id="password"
-                value={this.state.password}
-                onChange={this.handlePasswordChange}
-              />
-              <label for="password" className="active">
-                Password
-              </label>
-            </div>
-            <input
-              type="submit"
-              value="submit"
-              className="btn waves-effect waves-light btn-large teal"
-              style={styles.buttonContainer}
-            />
-          </form>
+            </form>
+          </div>
         );
 
       default:
-        return (
-          // <div>
-          //   <h1> you are logged in as {this.props.auth.email}</h1>
-          //   <Link to="/dashboard">Go to dashboard</Link>
-          // </div>
-
-          <div className="row">
-            <div
-              className="col s12"
-              style={{
-                display: 'flex',
-                justifyContent: 'center'
-              }}
-            >
-              <div className="card teal">
-                <div className="card-content white-text center-align ">
-                  <span className="card-title">Login Success!</span>
-                  <img src={success} />
-                </div>
-                <div className="card-action">
-                  <Link className="text-amber center-align" to="/dashboard">
-                    Go to dashboard
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+        return <Redirect to="/stations" />;
     }
   }
 
@@ -118,7 +92,9 @@ class LoginForm extends Component {
 
 const styles = {
   formContainer: {
-    marginTop: 30
+    marginTop: 30,
+    backgroundColor: '#F6F3E4',
+    padding: 10
   },
 
   buttonContainer: {

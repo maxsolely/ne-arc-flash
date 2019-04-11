@@ -14,7 +14,6 @@ import Calculation1584Details from './Calculation1584Details';
 import CalculationArcProDetails from './CalculationArcProDetails';
 
 const Landing = () => <h2>Landing</h2>;
-const Dashboard = () => <h2>Dashboard</h2>;
 
 class App extends Component {
   componentDidMount() {
@@ -24,13 +23,12 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className="container grey lighten-4" style={{ height: '100vh' }}>
         <BrowserRouter>
           <div>
             <Header />
             <Route exact path="/" component={Landing} />
             <Route path="/login" component={LoginForm} />
-            <Route path="/dashboard" component={Dashboard} />
             <Route path="/stations" component={Stations} />
             <Route path="/addStation" component={NewStationForm} />
             <Route path="/stationProfile" component={StationProfile} />

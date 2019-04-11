@@ -50,32 +50,42 @@ class Calculation1584Details extends Component {
     }
   }
 
-  renderContent() {
-    const {
-      createdAt,
-      sub,
-      sub2,
-      division,
-      faultType,
-      stationConfig,
-      electrodeConfig,
-      lineVoltage,
-      boltedFaultCurrent,
-      totalClearingTime,
-      comments
-    } = this.state.calcParams;
+  createArray(object) {
+    let objectArray = Object.keys(object).map(key => {
+      let formattedKey = key
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, function(str) {
+          return str.toUpperCase();
+        });
+      if (formattedKey === 'Created At')
+        object[key] = new Date(object[key]).toString().slice(0, 15);
+      if (formattedKey === 'Sub') formattedKey = 'Primary Substation';
+      if (formattedKey === 'Sub2') formattedKey = 'Remote Substation';
+      return [formattedKey, object[key]];
+    });
+    return objectArray;
+  }
 
-    const {
-      incidentEnergy,
-      calculatedArcFlashEnergy,
-      hrcLevel
-    } = this.state.results;
+  createFields(array) {
+    array.map(element => {
+      return (
+        <p className="col s12 m6">
+          <span>{element[0]}</span>
+          <span>{element[1]}</span>
+        </p>
+      );
+    });
+  }
+
+  renderContent() {
+    const calcParamsArray = this.createArray(this.state.calcParams);
+    const resultsArray = this.createArray(this.state.results);
 
     return (
-      <div className="container">
+      <div style={{ margin: '15px' }}>
         <section
-          className="section teal lighten-4 z-depth-2 col s12"
-          style={styles.sectionStyle}
+          className="section z-depth-1 col s12"
+          style={{ margin: '10px 0px', backgroundColor: '#F6F3E4' }}
         >
           <div className="row">
             <h4 className="col s12" style={styles.headerStyle}>
@@ -83,40 +93,54 @@ class Calculation1584Details extends Component {
             </h4>
           </div>
           <div id="calcParamsContainer" style={{ padding: '0px 10px' }}>
-            <div className="row">
-              <p className="col s12 m6">Primary Substation: {sub}</p>
-              <p className="col s12 m6">Remote Substation: {sub2}</p>
-              <p className="col s12 m6">Division: {division}</p>
-              <p className="col s12 m6">Fault Type: {faultType}</p>
-              <p className="col s12 m6">Station Config: {stationConfig}</p>
-              <p className="col s12 m6">Electrode Config: {electrodeConfig}</p>
-              <p className="col s12 m6">Line Voltage: {lineVoltage}</p>
-              <p className="col s12 m6">
-                Bolted Fault Current: {boltedFaultCurrent}
-              </p>
-              <p className="col s12 m6">
-                Total Clearing Time: {totalClearingTime}
-              </p>
-              <p className="col s12 m6">Comments: {comments}</p>
+            <div className="row" style={{ borderTop: '1px solid' }}>
+              {calcParamsArray.map(element => {
+                let unit;
+                if (element[0] === 'Bolted Fault Current') unit = 'Amps';
+                if (element[0] === 'Total Clearing Time') unit = 'seconds';
+                return (
+                  <p className="col s12 m6">
+                    <span style={styles.elementContainer}>
+                      <span style={styles.elementName}>{element[0]}: </span>
+                      <span>
+                        {element[1]} {unit}
+                      </span>
+                    </span>
+                  </p>
+                );
+              })}
             </div>
           </div>
         </section>
         <section
-          className="section amber lighten-4 z-depth-2"
-          style={styles.sectionStyle}
+          className="section z-depth-1"
+          style={{ margin: '10px 0px', backgroundColor: '#E4E7F6' }}
+          // style={{ margin: '10px 0px', backgroundColor: '#E4F6F3' }}
+          // style={{ margin: '10px 0px', backgroundColor: '#F3E4F6' }}
         >
           <div className="row">
             <h4 className="col s12" style={styles.headerStyle}>
               Results:
             </h4>
           </div>
-          <div id="calcResultsContainer" style={{ padding: '0px 10px' }}>
-            <div className="row">
-              <p className="col s12 m6">Incident Energy: {incidentEnergy}</p>
-              <p className="col s12 m6">
-                Calculated Arc Flash Energy: {calculatedArcFlashEnergy}
-              </p>
-              <p className="col s12 m6">HRC Level: {hrcLevel}</p>
+          <div id="calcResultsContainer" style={{ padding: '0px' }}>
+            <div className="row" style={{ borderTop: '1px solid' }}>
+              {resultsArray.map(element => {
+                let unit;
+                if (element[0] === 'Incident Energy') unit = 'J/cm2';
+                if (element[0] === 'Calculated Arc Flash Energy')
+                  unit = 'cal/cm2';
+                return (
+                  <p className="col s12 m6">
+                    <span style={styles.elementContainer}>
+                      <span style={styles.elementName}>{element[0]}: </span>
+                      <span>
+                        {element[1]} {unit}
+                      </span>
+                    </span>
+                  </p>
+                );
+              })}
               <span
                 className="btn waves-effect waves-light btn-large col s4 offset-s4"
                 style={{ position: 'initial' }}
@@ -142,12 +166,18 @@ class Calculation1584Details extends Component {
 }
 
 const styles = {
-  sectionStyle: {
-    margin: '10px 0'
-  },
   headerStyle: {
     margin: '0',
     paddingLeft: '15px'
+  },
+  elementContainer: {
+    padding: '12px 6px',
+    borderRadius: '5px',
+    fontSize: '20px'
+  },
+  elementName: {
+    color: 'black',
+    fontWeight: '600'
   }
 };
 

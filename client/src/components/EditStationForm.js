@@ -111,10 +111,10 @@ class EditStationForm extends Component {
 
       default:
         return (
-          <div className="container">
+          <div>
             <form className="col s12" onSubmit={this.handleSubmit}>
               <section
-                className="section amber lighten-4 z-depth-2"
+                className="section z-depth-2"
                 style={styles.sectionStyle}
               >
                 <div className="row">
@@ -259,7 +259,7 @@ class EditStationForm extends Component {
                     style={{ position: 'initial' }}
                     onClick={this.toggleModalFunction.bind(this)}
                   >
-                    Delete Calculation
+                    Delete Station
                   </span>
                 </div>
               </section>
@@ -282,7 +282,8 @@ class EditStationForm extends Component {
 
 const styles = {
   sectionStyle: {
-    margin: '10px 0'
+    margin: '10px 0',
+    backgroundColor: '#F6F3E4'
   },
   headerStyle: {
     margin: '0',

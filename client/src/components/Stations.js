@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { StationEntry, LoginCard } from './common';
 import { fetchStations } from '../actions';
+import Dashboard from './Dashboard';
 
 class Stations extends Component {
   constructor(props) {
@@ -38,67 +39,79 @@ class Stations extends Component {
           });
         }
         return (
-          <div className="container">
-            <div className="row">
-              <div className="input-field col s12 m6">
-                <i className="material-icons prefix">search</i>
-                <input
-                  id="icon_prefix"
-                  type="text"
-                  value={this.state.search}
-                  onChange={this.handleSearchChange.bind(this)}
-                />
-                <label for="icon_prefix">
-                  {this.state.search === '' ? 'Search Station Name' : ''}
-                </label>
+          <div>
+            <Dashboard />
+            {/* <div className="z-depth-1 white">
+              <div className="row"> */}
+            <div style={{ margin: '20px 15px' }} className="white z-depth-1 ">
+              <div className="row">
+                <div className="input-field col s12 m6">
+                  <i className="material-icons prefix">search</i>
+                  <input
+                    id="icon_prefix"
+                    type="text"
+                    value={this.state.search}
+                    onChange={this.handleSearchChange.bind(this)}
+                  />
+                  <label for="icon_prefix">
+                    {this.state.search === '' ? 'Search Station Name' : ''}
+                  </label>
+                </div>
               </div>
-            </div>
-            <table
-              className="striped z-depth-3 col s12"
-              style={styles.tableStyle}
-            >
-              <thead>
-                <tr>
-                  <th className="flow-text center-align">Station Name:</th>
-                  <th className="flow-text center-align">Division:</th>
-                  <th className="flow-text center-align">Voltage (kV):</th>
-                  <th className="flow-text center-align">Number of Calcs:</th>
-                  <th />
-                </tr>
-              </thead>
 
-              <tbody>
-                {stations.map(e => {
-                  return (
-                    <tr>
-                      <td className="center-align">{e.name}</td>
-                      <td className="center-align">{e.division}</td>
-                      <td className="center-align">{e.voltage}</td>
-                      <td className="center-align">{e.stationCalcs.length}</td>
-                      <td>
-                        <Link
-                          to={{
-                            pathname: '/stationProfile',
-                            state: { _id: e._id }
-                          }}
-                          className="waves-effect waves-light btn-small teal"
-                        >
-                          View
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+              <table className="striped col s12" style={styles.tableStyle}>
+                <thead>
+                  <tr>
+                    <th className="flow-text center-align">Station Name:</th>
+                    <th className="flow-text center-align">Division:</th>
+                    <th className="flow-text center-align">Voltage (kV):</th>
+                    <th className="flow-text center-align">Calcs:</th>
+                    <th />
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {stations.map(e => {
+                    return (
+                      <tr>
+                        <td className="center-align">{e.name}</td>
+                        <td className="center-align">{e.division}</td>
+                        <td className="center-align">
+                          {e.voltage.slice(0, -2)}
+                        </td>
+                        <td className="center-align">
+                          {e.stationCalcs.length}
+                        </td>
+                        <td>
+                          <Link
+                            to={{
+                              pathname: '/stationProfile',
+                              state: { _id: e._id }
+                            }}
+                            className="waves-effect waves-light btn-small col s2 offset-s3 indigo"
+                            style={{
+                              marginBottom: '10px',
+                              paddingRight: '10px'
+                            }}
+                          >
+                            View
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
+          // </div>
         );
       }
     }
   }
 
   render() {
-    return <div className="row">{this.renderContent()}</div>;
+    return <div>{this.renderContent()}</div>;
   }
 }
 

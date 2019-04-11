@@ -166,12 +166,12 @@ class NewArcProForm extends Component {
 
       default:
         return (
-          <div className="container">
+          <div>
             <h1>Arc Pro</h1>
             <form className="col s12" onSubmit={this.handleSubmit.bind(this)}>
               <section
-                className="section teal lighten-4 z-depth-2"
-                style={styles.sectionStyle}
+                className="section z-depth-2"
+                style={{ margin: '10px 0', backgroundColor: '#F6F3E4' }}
               >
                 <div className="row">
                   <h4 className="col s12" style={styles.headerStyle}>
@@ -347,8 +347,8 @@ class NewArcProForm extends Component {
               </section>
 
               <section
-                className="section indigo lighten-4 z-depth-2"
-                style={styles.sectionStyle}
+                className="section z-depth-2"
+                style={{ margin: '10px 0', backgroundColor: '#E4E7F6' }}
               >
                 <div className="row">
                   <h4 className="col s12" style={styles.headerStyle}>
@@ -489,8 +489,8 @@ class NewArcProForm extends Component {
               </section>
 
               <section
-                className="section red lighten-4 z-depth-2"
-                style={styles.sectionStyle}
+                className="section z-depth-2"
+                style={{ margin: '10px 0', backgroundColor: '#E4F5F6' }}
               >
                 <div className="row">
                   <h4 className="col s12" style={styles.headerStyle}>
@@ -622,8 +622,8 @@ class NewArcProForm extends Component {
               </section>
 
               <section
-                className="section amber lighten-4 z-depth-2"
-                style={styles.sectionStyle}
+                className="section z-depth-2"
+                style={{ margin: '10px 0', backgroundColor: '#F6E5E4' }}
               >
                 <div className="row">
                   <h4 className="col s12" style={styles.headerStyle}>

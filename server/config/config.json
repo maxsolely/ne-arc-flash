@@ -1,12 +1,12 @@
 {
   "test": {
     "PORT": 8000,
-    "MONGODB_URI": "mongodb://localhost:27017/NEArcFlashTest",
+    "MONGODB_URI": "mongodb://ne-arc-flash:E7V4Epg3BQ9oz7CFufh6HkA4ObcrFJYJOiP6Y8tulFdPPu5yQz3kjexzyQ5XcTWaesDHmm906KtbPYy9hEHNrg%3D%3D@ne-arc-flash.documents.azure.com:10255/?ssl=true",
     "JWT_SECRET": "sdjndsli4389h9p34tuw"
   },
   "development": {
     "PORT": 8000,
-    "MONGODB_URI": "mongodb://localhost:27017/NEArcFlash",
+    "MONGODB_URI": "mongodb://ne-arc-flash:E7V4Epg3BQ9oz7CFufh6HkA4ObcrFJYJOiP6Y8tulFdPPu5yQz3kjexzyQ5XcTWaesDHmm906KtbPYy9hEHNrg%3D%3D@ne-arc-flash.documents.azure.com:10255/?ssl=true",
     "JWT_SECRET": "rnl7zimkm34ioj4ojefawf",
     "redirect_uri": "http://localhost:3000"
   }
