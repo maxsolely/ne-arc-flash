@@ -167,7 +167,7 @@ class NewArcProForm extends Component {
       default:
         return (
           <div>
-            <h1>Arc Pro</h1>
+            <h3 style={styles.formTitleStyle}>New Arc Pro Calculation</h3>
             <form className="col s12" onSubmit={this.handleSubmit.bind(this)}>
               <section
                 className="section z-depth-2"
@@ -713,6 +713,9 @@ const styles = {
   headerStyle: {
     margin: '0',
     paddingLeft: '15px'
+  },
+  formTitleStyle: {
+    textAlign: 'center'
   }
 };
 

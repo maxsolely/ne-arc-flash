@@ -15,9 +15,9 @@ class Dashboard extends Component {
     let reducedArray = array.filter(calc => {
       let fetchedDate = new Date(calc.calcParams.createdAt).getTime();
       let todaysDate = new Date().getTime();
-      let differnceInDays =
+      let differenceInDays =
         Math.abs(fetchedDate - todaysDate) / (1000 * 60 * 60 * 24);
-      return differnceInDays < 1;
+      return differenceInDays < 1;
     });
 
     return reducedArray;
@@ -30,9 +30,10 @@ class Dashboard extends Component {
     let reducedArray = array.filter(calc => {
       let fetchedDate = new Date(calc.calcParams.createdAt).getTime();
       let todaysDate = new Date().getTime();
-      let differnceInDays =
+      let differenceInDays =
         Math.abs(fetchedDate - todaysDate) / (1000 * 60 * 60 * 24);
-      return 0 < differnceInDays < 1;
+      console.log(calc, differenceInDays);
+      return differenceInDays < 7 && differenceInDays > 1;
     });
 
     return reducedArray;

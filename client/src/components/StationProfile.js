@@ -118,7 +118,7 @@ class StationProfile extends Component {
 
             <div style={{ margin: '35px 15px' }}>
               {stationCalcs === undefined || stationCalcs.length === 0 ? (
-                <p class="col s6">
+                <p class="col s12" style={styles.noCalcTypography}>
                   There are no calculations for this station yet
                 </p>
               ) : (
@@ -141,30 +141,27 @@ class StationProfile extends Component {
               )}
             </div>
 
-            <div style={{ margin: '20px 15px' }} className="white z-depth-1 ">
-              <h5 style={{ padding: '10px 0px 0px 5px' }}>
-                Previous Calculations:
-              </h5>
-              <table className="striped col s12">
-                <thead>
-                  <tr>
-                    <th className="flow-text center-align">Date:</th>
-                    <th className="flow-text center-align">
-                      Arc Flash Energy:
-                    </th>
-                    <th className="flow-text center-align">Incident Energy:</th>
-                    <th className="flow-text center-align">HRC Level:</th>
-                    <th />
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {stationCalcs === undefined || stationCalcs.length === 0 ? (
-                    <p class="col s6">
-                      There are no calculations for this station yet
-                    </p>
-                  ) : (
-                    stationCalcs.map((e, index) => {
+            {stationCalcs === undefined || stationCalcs.length <= 1 ? null : (
+              <div style={{ margin: '20px 15px' }} className="white z-depth-1 ">
+                <h5 style={{ padding: '10px 0px 0px 5px' }}>
+                  Previous Calculations:
+                </h5>
+                <table className="striped col s12">
+                  <thead>
+                    <tr>
+                      <th className="flow-text center-align">Date:</th>
+                      <th className="flow-text center-align">
+                        Arc Flash Energy:
+                      </th>
+                      <th className="flow-text center-align">
+                        Incident Energy:
+                      </th>
+                      <th className="flow-text center-align">HRC Level:</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stationCalcs.map((e, index) => {
                       if (index === 0) {
                         return null;
                       }
@@ -213,11 +210,11 @@ class StationProfile extends Component {
                           </td>
                         </tr>
                       );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         );
       }
@@ -249,6 +246,10 @@ const styles = {
     fontSize: 20,
     marginTop: 5,
     marginBottom: 0
+  },
+  noCalcTypography: {
+    fontSize: 20,
+    textAlign: 'center'
   }
 };
 

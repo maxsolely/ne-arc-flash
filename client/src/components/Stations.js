@@ -9,7 +9,8 @@ class Stations extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: ''
+      stationSearch: '',
+      divisionSearch: ''
     };
   }
 
@@ -17,8 +18,12 @@ class Stations extends Component {
     this.props.fetchStations(this.props.auth.xauth);
   }
 
-  handleSearchChange(event) {
-    this.setState({ search: event.target.value });
+  handleStationSearchChange(event) {
+    this.setState({ stationSearch: event.target.value });
+  }
+
+  handleDivisionSearchChange(event) {
+    this.setState({ divisionSearch: event.target.value });
   }
 
   renderContent() {
@@ -30,12 +35,20 @@ class Stations extends Component {
         return <LoginCard />;
 
       default: {
-        const { search } = this.state;
+        const { stationSearch, divisionSearch } = this.state;
         let stations = this.props.stations;
-        if (search !== '') {
+
+        if (stationSearch !== '') {
           stations = stations.filter(e => {
             const name = e.name.toLowerCase();
-            return name.indexOf(search.toLowerCase()) >= 0;
+            return name.indexOf(stationSearch.toLowerCase()) >= 0;
+          });
+        }
+
+        if (divisionSearch !== '') {
+          stations = stations.filter(e => {
+            const divisionName = e.division.toLowerCase();
+            return divisionName.indexOf(divisionSearch.toLowerCase()) >= 0;
           });
         }
         return (
@@ -48,13 +61,29 @@ class Stations extends Component {
                 <div className="input-field col s12 m6">
                   <i className="material-icons prefix">search</i>
                   <input
-                    id="icon_prefix"
+                    id="icon_prefix_station"
                     type="text"
-                    value={this.state.search}
-                    onChange={this.handleSearchChange.bind(this)}
+                    value={this.state.stationSearch}
+                    onChange={this.handleStationSearchChange.bind(this)}
                   />
-                  <label for="icon_prefix">
-                    {this.state.search === '' ? 'Search Station Name' : ''}
+                  <label for="icon_prefix_station">
+                    {this.state.stationSearch === ''
+                      ? 'Search Station Name'
+                      : ''}
+                  </label>
+                </div>
+                <div className="input-field col s12 m6">
+                  <i className="material-icons prefix">landscape</i>
+                  <input
+                    id="icon_prefix_division"
+                    type="text"
+                    value={this.state.divisionSearch}
+                    onChange={this.handleDivisionSearchChange.bind(this)}
+                  />
+                  <label for="icon_prefix_division">
+                    {this.state.divisionSearch === ''
+                      ? 'Search By Division'
+                      : ''}
                   </label>
                 </div>
               </div>

@@ -145,6 +145,7 @@ class EditStationForm extends Component {
                   <div className="row">
                     <div className="input-field col s12 m6">
                       <select
+                        id="voltage"
                         className="browser-default"
                         onChange={this.handleVoltageChange}
                         value={this.state.voltage}
@@ -158,6 +159,9 @@ class EditStationForm extends Component {
                         <option value="69 kV">69</option>
                         <option value="115 kV">115</option>
                       </select>
+                      <label for="voltage" className="active">
+                        Voltage:
+                      </label>
                     </div>
                   </div>
                   <div className="row">
@@ -249,13 +253,13 @@ class EditStationForm extends Component {
                     </div>
                   </div>
                   <input
-                    className="btn waves-effect waves-light btn-large col s4 offset-s4 m4 offset-m1"
+                    className="btn waves-effect waves-light btn-large col s5  m4 offset-m1"
                     style={{ zIndex: 0 }}
                     type="submit"
                     value="save changes"
                   />
                   <span
-                    className="btn waves-effect waves-light btn-large col s4 offset-s16 m4 offset-m7"
+                    className="btn waves-effect waves-light btn-large col s5 offset-s2 m4 offset-m2"
                     style={{ position: 'initial' }}
                     onClick={this.toggleModalFunction.bind(this)}
                   >

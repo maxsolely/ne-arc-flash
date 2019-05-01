@@ -36,7 +36,7 @@ class Header extends Component {
         <div className="nav-wrapper indigo">
           <div style={{ paddingLeft: 15 }}>
             <Link
-              to={this.props.auth._id ? '/dashboard' : '/'}
+              to={this.props.auth._id ? '/stations' : '/login'}
               className="left brand-logo"
             >
               NE Arc Flash

@@ -475,6 +475,10 @@ app.post('/api/arccalcarcpro', authenticate, (req, res) => {
           .save()
           .then(arcCalcArcPro => {
             station.stationCalcs.push(arcCalcArcPro._id);
+            sendNewCalcEmail(
+              arcCalcArcPro.calcParams.division,
+              arcCalcArcPro.calcParams.sub
+            );
             station
               .save()
               .then(res.send(arcCalcArcPro))

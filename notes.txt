@@ -1,0 +1,24 @@
+Home Page:
+
+How many are done in the month
+how many are due within 90 days (every 5 years)
+breakup of the HRC levels by stations
+
+
+Station Page:
+Identify the Worst Operating Condition - coming from the comment section
+i.e Calculation is based on this breaker opening on this line..
+
+
+Email people when a calculation done
+
+Priorities:
+Database
+1544 calculations
+Stations Profiles
+Email Notifications
+Home Dashboard
+Reports
+Resetting Password
+
+

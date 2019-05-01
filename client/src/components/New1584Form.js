@@ -223,11 +223,24 @@ class New1584Form extends Component {
                         <option value="" disabled selected>
                           Choose an Electrode Configuration
                         </option>
-                        <option value="VCB ">VCB</option>
-                        <option value="VCBB">VCBB</option>
-                        <option value="HCB">HCB</option>
-                        <option value="VOA">VOA</option>
-                        <option value="HOA">HOA</option>
+                        <option value="VCB ">
+                          VCB (Vertical conductors/electrodes inside a metal
+                          box/enclosure)
+                        </option>
+                        <option value="VCBB">
+                          VCBB (Vertical conductors/electrodes terminated in an
+                          insulating barrier inside a metal box)
+                        </option>
+                        <option value="HCB">
+                          HCB (Horizontal conductors/electrodes inside a metal
+                          box/enclosure)
+                        </option>
+                        <option value="VOA">
+                          VOA (Vertical conductors/electrodes in open air)
+                        </option>
+                        <option value="HOA">
+                          HOA (Horizontal conductors/electrodes in open air)
+                        </option>
                       </select>
                     </div>
                   </div>
