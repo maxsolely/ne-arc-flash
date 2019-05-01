@@ -22,3 +22,32 @@ Reports
 Resetting Password
 
 
+For different authentication:
+- Update the user model to have one of three different types of roles: admin, readWrite, and read  DONE
+- When you login set the role in the header (/login route)  DONE
+- Update seed data  DONE
+- Update post routes to use the authenticateReadWrite middleware
+- Update delete stations route to have authenticateAdmin middleware Done
+
+Routes that require Admin: 
+- DELETE Station
+- PATCH Station/Id
+
+Routes that require ReadWrite:
+- POST Stations
+- POST ArcCalc1584
+- DELETE ArcCalc1584/Id
+- POST ArcCalcArcPro
+- DELETE ArcCalc1584/Id
+
+
+
+
+Routes that require Read:
+- GET Stations
+- GET Stations/:Id
+- GET ArcCalc1584
+- GET ArcCalc1584/Id
+- GET ArcCalcArcPro
+- GET ArcCalcArcPro/Id
+

@@ -32,7 +32,8 @@ describe('POST /stations', () => {
   it('should add a new station', done => {
     request(app)
       .post('/api/stations')
-      .set('x-auth', users[0].tokens[0].token)
+      // .set('x-auth', users[0].tokens[0].token)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .send({ name, division, voltage, stationConfig })
       .expect(200)
       .expect(res => {
@@ -90,7 +91,8 @@ describe('POST /stations', () => {
   it('should not add a station with the same name and voltage', done => {
     request(app)
       .post('/api/stations')
-      .set('x-auth', users[0].tokens[0].token)
+      // .set('x-auth', users[0].tokens[0].token)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .send({
         name: 'Test Station',
         division,
@@ -117,7 +119,8 @@ describe('POST /stations', () => {
   it('should not add a station with invalid body', done => {
     request(app)
       .post('/api/stations')
-      .set('x-auth', users[0].tokens[0].token)
+      // .set('x-auth', users[0].tokens[0].token)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .send({ name, division: 'Invalid Division', voltage, stationConfig })
       .expect(400)
       .end((err, res) => {
@@ -135,13 +138,28 @@ describe('POST /stations', () => {
           });
       });
   });
+
+  it('should not add a station if the user has Read access', done => {
+    request(app)
+      .post('/api/stations')
+      .set({ 'x-auth': users[2].tokens[0].token, 'user-role': users[2].role })
+      .send({
+        name: 'New Station',
+        division: 'Bay State West',
+        voltage: '13.8 kV',
+        stationConfig: 'Metalclad'
+      })
+      .expect(401)
+      .end(done);
+  });
 });
 
 describe('GET /stations', () => {
   it('should return all stations in the database', done => {
     request(app)
       .get('/api/stations')
-      .set('x-auth', users[0].tokens[0].token)
+      // .set('x-auth', users[0].tokens[0].token)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .expect(200)
       .end((err, res) => {
         if (err) {
@@ -165,7 +183,8 @@ describe('GET /stations/:id', () => {
     var id = stations[0]._id.toHexString();
     request(app)
       .get(`/api/stations/${id}`)
-      .set('x-auth', users[0].tokens[0].token)
+      // .set('x-auth', users[0].tokens[0].token)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .expect(200)
       .expect(res => {
         expect(res.body.station.name).toBe(stations[0].name);
@@ -177,7 +196,8 @@ describe('GET /stations/:id', () => {
     var unkownId = new ObjectID().toHexString;
     request(app)
       .get(`/api/stations/${unkownId}`)
-      .set('x-auth', users[0].tokens[0].token)
+      // .set('x-auth', users[0].tokens[0].token)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .expect(404)
       .end(done);
   });
@@ -185,7 +205,8 @@ describe('GET /stations/:id', () => {
   it('should return 404 for non-object ids', done => {
     request(app)
       .get(`/api/stations/123`)
-      .set('x-auth', users[0].tokens[0].token)
+      // .set('x-auth', users[0].tokens[0].token)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .expect(404)
       .end(done);
   });
@@ -196,6 +217,7 @@ describe('DELETE /stations/:id', () => {
     var id = stations[0]._id.toHexString();
     request(app)
       .delete(`/api/stations/${id}`)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .expect(200)
       .expect(res => {
         expect(res.body.station.name).toBe(stations[0].name);
@@ -216,10 +238,20 @@ describe('DELETE /stations/:id', () => {
       });
   });
 
+  it('should retunr 401 if user is not Admin', done => {
+    var id = stations[0]._id.toHexString();
+    request(app)
+      .delete(`/api/stations/${id}`)
+      .set({ 'x-auth': users[1].tokens[0].token, 'user-role': users[1].role })
+      .expect(401)
+      .end(done);
+  });
+
   it('should return 404 if station not found', done => {
     var unkownId = new ObjectID().toHexString;
     request(app)
       .delete(`/api/stations/${unkownId}`)
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .expect(404)
       .end(done);
   });
@@ -227,6 +259,7 @@ describe('DELETE /stations/:id', () => {
   it('should return 404 for non-object ids', done => {
     request(app)
       .delete('/api/stations/123')
+      .set({ 'x-auth': users[0].tokens[0].token, 'user-role': users[0].role })
       .expect(404)
       .end(done);
   });

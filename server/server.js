@@ -86,7 +86,7 @@ app.post('/api/users/login', (req, res) => {
   User.findByCredentials(body.email, body.password)
     .then(user => {
       return user.generateAuthToken().then(token => {
-        res.header('x-auth', token).send(user);
+        res.header({ 'x-auth': token, 'user-role': user.role }).send(user);
       });
     })
     .catch(e => {
@@ -110,6 +110,12 @@ app.delete('/api/users/me/token', authenticate, (req, res) => {
 // ********************************************************************************************
 
 app.post('/api/stations', authenticate, (req, res) => {
+  if (req.role === 'Read') {
+    return res
+      .status(401)
+      .send('You are not authorized to perform this action');
+  }
+
   var body = _.pick(req.body, ['name', 'division', 'voltage', 'stationConfig']);
   Station.findOne({ name: body.name, voltage: body.voltage }).then(station => {
     if (!station) {
@@ -175,7 +181,13 @@ app.get('/api/stations/:id', authenticate, (req, res) => {
     });
 });
 
-app.delete('/api/stations/:id', (req, res) => {
+app.delete('/api/stations/:id', authenticate, (req, res) => {
+  if (req.role !== 'Admin') {
+    return res
+      .status(401)
+      .send('You are not authorized to perform this action');
+  }
+
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
@@ -228,7 +240,13 @@ app.delete('/api/stations/:id', (req, res) => {
     });
 });
 
-app.patch('/api/stations/:id', (req, res) => {
+app.patch('/api/stations/:id', authenticate, (req, res) => {
+  if (req.role !== 'Admin') {
+    return res
+      .status(401)
+      .send('You are not authorized to perform this action');
+  }
+
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
@@ -282,6 +300,12 @@ app.patch('/api/stations/:id', (req, res) => {
 // ********************************************************************************************
 
 app.post('/api/arccalc1584', authenticate, (req, res) => {
+  if (req.role === 'Read') {
+    return res
+      .status(401)
+      .send('You are not authorized to perform this action');
+  }
+
   var bodyCalcParams = _.pick(req.body.calcParams, [
     'sub',
     'sub2',
@@ -371,6 +395,12 @@ app.get('/api/arccalc1584/:id', authenticate, (req, res) => {
 });
 
 app.delete('/api/arccalc1584/:id', authenticate, (req, res) => {
+  if (req.role === 'Read') {
+    return res
+      .status(401)
+      .send('You are not authorized to perform this action');
+  }
+
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
@@ -418,6 +448,11 @@ app.delete('/api/arccalc1584/:id', authenticate, (req, res) => {
 // ********************************************************************************************
 
 app.post('/api/arccalcarcpro', authenticate, (req, res) => {
+  if (req.role === 'Read') {
+    return res
+      .status(401)
+      .send('You are not authorized to perform this action');
+  }
   var bodyCalcParams = _.pick(req.body.calcParams, [
     'sub',
     'sub2',
@@ -524,6 +559,11 @@ app.get('/api/arccalcarcpro/:id', authenticate, (req, res) => {
 });
 
 app.delete('/api/arccalcarcpro/:id', authenticate, (req, res) => {
+  if (req.role === 'Read') {
+    return res
+      .status(401)
+      .send('You are not authorized to perform this action');
+  }
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {

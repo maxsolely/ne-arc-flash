@@ -8,6 +8,7 @@ const { User } = require('./../../models/user');
 
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
+const userThreeId = new ObjectID();
 
 const arcCalc1584calculations = [
   {
@@ -156,6 +157,7 @@ const users = [
     _id: userOneId,
     email: 'max@example.com',
     password: 'userOnePass',
+    role: 'Admin',
     tokens: [
       {
         access: 'auth',
@@ -169,11 +171,26 @@ const users = [
     _id: userTwoId,
     email: 'nick@example.com',
     password: 'userTwoPass',
+    role: 'ReadWrite',
     tokens: [
       {
         access: 'auth',
         token: jwt
           .sign({ _id: userTwoId, access: 'auth' }, process.env.JWT_SECRET)
+          .toString()
+      }
+    ]
+  },
+  {
+    _id: userThreeId,
+    email: 'eric@example.com',
+    password: 'userThreePass',
+    role: 'Read',
+    tokens: [
+      {
+        access: 'auth',
+        token: jwt
+          .sign({ _id: userOneId, access: 'auth' }, process.env.JWT_SECRET)
           .toString()
       }
     ]
@@ -224,9 +241,10 @@ const populateUsers = done => {
       // we want to create new instances because if we just insertMany like we do in the populateTodos, the middleware will never be called and the passwords will not be hashed
       var userOne = new User(users[0]).save();
       var userTwo = new User(users[1]).save();
+      var userThree = new User(users[2]).save();
 
       //The callback will not be fired until both userOne and userTwo promises are resolved
-      return Promise.all([userOne, userTwo]);
+      return Promise.all([userOne, userTwo, userThree]);
     })
     .then(() => done());
 };
