@@ -18,4 +18,5 @@ export const FETCH_ARCPRO_CALCULATION_INFO = 'fetch_arcpro_calculation_info';
 export const FETCH_ALL_ARCPRO_CALCS = 'fetch_all_arcpro_calcs';
 
 export const ERROR_400 = 'error_400';
+export const ERROR_401 = 'error_401';
 export const RESET_ERROR_MESSAGE = 'reset_error_message';

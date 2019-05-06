@@ -3,6 +3,7 @@ import { FETCH_USER, LOGIN_USER } from '../actions/types';
 const INITIAL_STATE = {
   email: '',
   xauth: '',
+  role: '',
   _id: ''
 };
 
@@ -16,7 +17,13 @@ export default function(state = INITIAL_STATE, action) {
       };
     case LOGIN_USER: {
       const { email, _id } = action.payload.userData;
-      return { ...state, xauth: action.payload.xauth, email, _id };
+      return {
+        ...state,
+        xauth: action.payload.xauth,
+        role: action.payload.role,
+        email,
+        _id
+      };
     }
     default:
       return state;

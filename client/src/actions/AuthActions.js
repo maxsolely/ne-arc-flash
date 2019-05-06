@@ -1,19 +1,6 @@
 import axios from 'axios';
 import { FETCH_USER, LOGIN_USER } from './types';
 
-// export const fetchUser = () => {
-//   return function(dispatch) {
-//     axios
-//       .get('/api/users/me', {
-//         headers: {
-//           'x-auth':
-//             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YzZlYzAwNGE3OGEzMWNhYzc2NmFlMDkiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTUwODY2MDIzfQ.R6jAgLsWkwWfMohPdp596fkK2vPukSQpEguinCA2LVg'
-//         }
-//       })
-//       .then(res => dispatch({ type: FETCH_USER, payload: res }));
-//   };
-// };
-
 export const fetchUser = xauth => async dispatch => {
   if (xauth === null || xauth.length === 0) {
     dispatch({ type: FETCH_USER, payload: { email: '', password: '' } });
@@ -34,6 +21,10 @@ export const loginUser = (email, password) => async dispatch => {
   });
   dispatch({
     type: LOGIN_USER,
-    payload: { xauth: res.headers['x-auth'], userData: res.data }
+    payload: {
+      xauth: res.headers['x-auth'],
+      role: res.headers['user-role'],
+      userData: res.data
+    }
   });
 };

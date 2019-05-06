@@ -4,8 +4,9 @@ import {
   ADD_STATION,
   EDIT_STATION,
   DELETE_STATION,
+  FETCH_STATION_INFO,
   ERROR_400,
-  FETCH_STATION_INFO
+  ERROR_401
 } from './types';
 
 export const fetchStations = xauth => async dispatch => {
@@ -22,10 +23,15 @@ export const fetchStations = xauth => async dispatch => {
   }
 };
 
-export const addStation = (xauth, body) => async dispatch => {
+export const addStation = (xauth, role, body) => async dispatch => {
   // const { stationName, division, voltage, stationConfig } = body;
   if (xauth === null || xauth.length === 0) {
     dispatch({ type: ADD_STATION, payload: {} });
+  } else if (role === 'Read') {
+    dispatch({
+      type: ERROR_401,
+      payload: 'You are not authorized to perform this action.'
+    });
   } else {
     try {
       const res = await axios.post('/api/stations', body, {

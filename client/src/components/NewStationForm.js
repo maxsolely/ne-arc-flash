@@ -47,7 +47,11 @@ class NewStationForm extends Component {
     event.preventDefault();
     console.log(this.state);
     console.log(this.props.auth.xauth);
-    this.props.addStation(this.props.auth.xauth, this.state);
+    this.props.addStation(
+      this.props.auth.xauth,
+      this.props.auth.role,
+      this.state
+    );
     this.setState({
       name: '',
       division: '',
