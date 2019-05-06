@@ -69,7 +69,7 @@ class New1584Form extends Component {
   handleSubmit(event) {
     event.preventDefault();
     console.log(this.state);
-    this.props.add1584Calc(this.props.auth.xauth, {
+    this.props.add1584Calc(this.props.auth.xauth, this.props.auth.role, {
       calcParams: this.state.calcParams,
       results: this.state.results
     });

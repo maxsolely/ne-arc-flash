@@ -10,7 +10,8 @@ class Calculation1584Details extends Component {
       calcParams: this.props.location.state.calculation.calcParams,
       results: this.props.location.state.calculation.results,
       calcID: this.props.location.state.calculation._id,
-      showModal: false
+      showModal: false,
+      redirect: false
     };
   }
 
@@ -22,18 +23,30 @@ class Calculation1584Details extends Component {
 
   deleteCalculation() {
     console.log('triggering delete 1584calc');
-    this.props.delete1584Calc(this.props.auth.xauth, this.state.calcID);
-    this.props.history.goBack();
-    // <Redirect
-    //       to={{ pathname: '/stationProfile', state: { _id: this.state.stationID } }}
-    //     />
-    // this.setState({ showModal: !this.state.showModal });
+    this.props.delete1584Calc(
+      this.props.auth.xauth,
+      this.props.auth.role,
+      this.state.calcID
+    );
+    setTimeout(() => this.props.history.goBack(), 1000);
   }
 
   renderModal() {
     if (!this.state.showModal) {
       return null;
     } else {
+      const modalContent =
+        this.props.auth.role === 'Read' ? (
+          <div className="row">
+            Error: You do not have permission to perform this action.
+          </div>
+        ) : (
+          <div>
+            <div class="row">
+              Are you sure you want to delete this Calculation?
+            </div>
+          </div>
+        );
       return (
         <Modal
           modalTitle="Confirm Deletion"
@@ -42,9 +55,7 @@ class Calculation1584Details extends Component {
           onConfirm={this.deleteCalculation.bind(this)}
           onConfirmButtonText="Delete Calculation"
         >
-          <div class="row">
-            Are you sure you want to delete this Calculation?
-          </div>
+          {modalContent}
         </Modal>
       );
     }
@@ -183,7 +194,8 @@ const styles = {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth
+    auth: state.auth,
+    errorMessage: state.errorMessage
   };
 }
 

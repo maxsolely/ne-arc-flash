@@ -107,7 +107,7 @@ class NewArcProForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
     console.log(this.state);
-    this.props.addArcProCalc(this.props.auth.xauth, {
+    this.props.addArcProCalc(this.props.auth.xauth, this.props.auth.role, {
       calcParams: this.state.calcParams,
       arcProInput: this.state.arcProInput,
       arcProResults: this.state.arcProResults,

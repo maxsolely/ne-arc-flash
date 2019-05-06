@@ -4,7 +4,8 @@ import {
   ADD_1584_CALC,
   DELETE_1584_CALC,
   FETCH_ALL_1584_CALCS,
-  ERROR_400
+  ERROR_400,
+  ERROR_401
 } from './types';
 
 export const fetch1584CalculationInfo = (xauth, id) => async dispatch => {
@@ -26,6 +27,7 @@ export const fetch1584CalculationInfo = (xauth, id) => async dispatch => {
 
 export const add1584Calc = (
   xauth,
+  role,
   { calcParams, results }
 ) => async dispatch => {
   //for some reason, faultCurrent and relayOpTime are getting converted to a string when they are getting passed into this action creator. They both need to be a Number.
@@ -47,6 +49,11 @@ export const add1584Calc = (
 
   if (xauth === null || xauth.length === 0) {
     dispatch({ type: ADD_1584_CALC, payload: {} });
+  } else if (role === 'Read') {
+    dispatch({
+      type: ERROR_401,
+      payload: 'You are not authorized to perform this action.'
+    });
   } else {
     try {
       const res = await axios.post(
@@ -64,8 +71,8 @@ export const add1584Calc = (
   }
 };
 
-export const delete1584Calc = (xauth, calcID) => async dispatch => {
-  if (xauth === null || xauth.length === 0) {
+export const delete1584Calc = (xauth, role, calcID) => async dispatch => {
+  if (xauth === null || xauth.length === 0 || role === 'Read') {
     dispatch({ type: DELETE_1584_CALC, payload: {} });
   } else {
     const res = await axios.delete(`/api/arccalc1584/${calcID}`, {

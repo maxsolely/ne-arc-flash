@@ -24,7 +24,11 @@ class CalculationArcProDetails extends Component {
 
   deleteCalculation() {
     console.log('triggering delete 1584calc');
-    this.props.deleteArcProCalc(this.props.auth.xauth, this.state.calcID);
+    this.props.deleteArcProCalc(
+      this.props.auth.xauth,
+      this.props.auth.role,
+      this.state.calcID
+    );
     this.props.history.goBack();
   }
 
@@ -32,6 +36,18 @@ class CalculationArcProDetails extends Component {
     if (!this.state.showModal) {
       return null;
     } else {
+      const modalContent =
+        this.props.auth.role === 'Read' ? (
+          <div className="row">
+            Error: You do not have permission to perform this action.
+          </div>
+        ) : (
+          <div>
+            <div class="row">
+              Are you sure you want to delete this Calculation?
+            </div>
+          </div>
+        );
       return (
         <Modal
           modalTitle="Confirm Deletion"
@@ -40,9 +56,7 @@ class CalculationArcProDetails extends Component {
           onConfirm={this.deleteCalculation.bind(this)}
           onConfirmButtonText="Delete Calculation"
         >
-          <div class="row">
-            Are you sure you want to delete this Calculation?
-          </div>
+          <div class="row">{modalContent}</div>
         </Modal>
       );
     }

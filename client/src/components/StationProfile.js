@@ -13,7 +13,13 @@ class StationProfile extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchStationInfo(this.props.auth.xauth, this.state.stationID);
+    console.log('station profile did mount');
+    console.log(this.state.stationID);
+    console.log(this.props.stationInfo._id);
+    this.props.fetchStationInfo(
+      this.props.auth.xauth,
+      this.state.stationID || this.props.stationInfo._id
+    );
   }
 
   renderContent() {
